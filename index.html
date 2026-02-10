@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ระบบขอลากลับบ้าน</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="/_sdk/data_sdk.js"></script>
   <script src="/_sdk/element_sdk.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
   <style>
@@ -34,18 +33,9 @@
     input, textarea, select {
       font-family: 'Kanit', sans-serif;
     }
-
-    .error-shake {
-      animation: shake 0.3s;
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
   </style>
   <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
  <body class="h-full overflow-auto bg-gradient-to-br from-blue-50 via-white to-blue-100">
   <div id="app" class="w-full h-full flex flex-col"><!-- Toast Container -->
@@ -63,15 +53,15 @@
        <div class="flex rounded-lg bg-gray-100 p-1 mb-6 gap-1"><button onclick="switchRole('student')" class="flex-1 py-2 px-4 rounded font-semibold text-sm transition-all role-tab-btn bg-white text-blue-600 shadow" data-role="student"> นักเรียน </button> <button onclick="switchRole('teacher')" class="flex-1 py-2 px-4 rounded font-semibold text-sm transition-all role-tab-btn text-gray-600 hover:text-gray-800" data-role="teacher"> ครู </button>
        </div><!-- Form: Student Login -->
        <form id="form-student-login" onsubmit="loginStudent(event)" class="space-y-4 role-form" data-role="student">
-        <div><label class="block text-sm font-semibold text-gray-700 mb-2">🔑 รหัสนักเรียน</label> <input type="text" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition" id="student-id-input" placeholder="เช่น 001" required> <span class="error-msg text-red-500 text-xs mt-1 hidden"></span>
+        <div><label class="block text-sm font-semibold text-gray-700 mb-2">🔑 รหัสนักเรียน</label> <input type="text" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition" id="student-id-input" placeholder="เช่น 001" required>
         </div>
-        <div><label class="block text-sm font-semibold text-gray-700 mb-2">🆔 เลขประจำตัวประชาชน</label> <input type="text" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition" id="student-citizen-input" placeholder="13 หลัก" maxlength="13" required> <span class="error-msg text-red-500 text-xs mt-1 hidden"></span>
+        <div><label class="block text-sm font-semibold text-gray-700 mb-2">🆔 เลขประจำตัวประชาชน</label> <input type="text" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition" id="student-citizen-input" placeholder="13 หลัก" maxlength="13" required>
         </div><button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 rounded-lg transition-all transform hover:scale-105"> เข้าสู่ระบบ </button>
        </form><!-- Form: Teacher Login -->
        <form id="form-teacher-login" onsubmit="loginTeacher(event)" class="space-y-4 role-form hidden" data-role="teacher">
-        <div><label class="block text-sm font-semibold text-gray-700 mb-2">👤 ชื่อผู้ใช้</label> <input type="text" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition" id="teacher-user-input" placeholder="admin" required> <span class="error-msg text-red-500 text-xs mt-1 hidden"></span>
+        <div><label class="block text-sm font-semibold text-gray-700 mb-2">👤 ชื่อผู้ใช้</label> <input type="text" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition" id="teacher-user-input" placeholder="admin" required>
         </div>
-        <div><label class="block text-sm font-semibold text-gray-700 mb-2">🔐 รหัสผ่าน</label> <input type="password" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition" id="teacher-pass-input" placeholder="รหัสผ่าน" required> <span class="error-msg text-red-500 text-xs mt-1 hidden"></span>
+        <div><label class="block text-sm font-semibold text-gray-700 mb-2">🔐 รหัสผ่าน</label> <input type="password" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition" id="teacher-pass-input" placeholder="รหัสผ่าน" required>
         </div><button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 rounded-lg transition-all transform hover:scale-105"> เข้าสู่ระบบ </button>
         <p class="text-center text-xs text-gray-500 mt-4">ทดสอบ: admin / 1234</p>
        </form>
@@ -95,31 +85,31 @@
        <form id="form-request" onsubmit="submitRequest(event)" class="space-y-8"><!-- Section: Student Info -->
         <fieldset class="border-2 border-blue-200 rounded-lg p-6 bg-blue-50"><legend class="text-lg font-bold text-blue-700 px-2">👤 ข้อมูลนักเรียน</legend>
          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-          <div><label class="block text-sm font-semibold text-gray-700 mb-2">ชื่อ-นามสกุ��� *</label> <input type="text" id="field-name" placeholder="เช่น สมชาย ใจดี" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none" required> <span class="field-error text-red-500 text-xs mt-1 hidden"></span>
+          <div><label class="block text-sm font-semibold text-gray-700 mb-2">ชื่อ-นามสกุล *</label> <input type="text" id="field-name" placeholder="เช่น สมชาย ใจดี" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none" required>
           </div>
-          <div><label class="block text-sm font-semibold text-gray-700 mb-2">ชั้น/ห้อง *</label> <input type="text" id="field-class" placeholder="เช่น ม.3/1" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none" required> <span class="field-error text-red-500 text-xs mt-1 hidden"></span>
+          <div><label class="block text-sm font-semibold text-gray-700 mb-2">ชั้น/ห้อง *</label> <input type="text" id="field-class" placeholder="เช่น ม.3/1" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none" required>
           </div>
          </div>
         </fieldset><!-- Section: Leave Details -->
         <fieldset class="border-2 border-green-200 rounded-lg p-6 bg-green-50"><legend class="text-lg font-bold text-green-700 px-2">📅 รายละเอียดการลา</legend>
          <div class="space-y-6 mt-4">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-           <div><label class="block text-sm font-semibold text-gray-700 mb-2">วันที่ลา *</label> <input type="date" id="field-date" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none" required> <span class="field-error text-red-500 text-xs mt-1 hidden"></span>
+           <div><label class="block text-sm font-semibold text-gray-700 mb-2">วันที่ลา *</label> <input type="date" id="field-date" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none" required>
            </div>
-           <div><label class="block text-sm font-semibold text-gray-700 mb-2">เวลาออก *</label> <input type="time" id="field-time-out" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none" required> <span class="field-error text-red-500 text-xs mt-1 hidden"></span>
+           <div><label class="block text-sm font-semibold text-gray-700 mb-2">เวลาออก *</label> <input type="time" id="field-time-out" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none" required>
            </div>
            <div><label class="block text-sm font-semibold text-gray-700 mb-2">เวลากลับ (ถ้ามี)</label> <input type="time" id="field-time-back" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none">
            </div>
           </div>
-          <div><label class="block text-sm font-semibold text-gray-700 mb-2">เหตุผลการลา *</label> <textarea id="field-reason" placeholder="ระบุเหตุผลการลาของคุณ" rows="4" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none" required></textarea> <span class="field-error text-red-500 text-xs mt-1 hidden"></span>
+          <div><label class="block text-sm font-semibold text-gray-700 mb-2">เหตุผลการลา *</label> <textarea id="field-reason" placeholder="ระบุเหตุผลการลาของคุณ" rows="4" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none" required></textarea>
           </div>
          </div>
         </fieldset><!-- Section: Guardian Info -->
         <fieldset class="border-2 border-orange-200 rounded-lg p-6 bg-orange-50"><legend class="text-lg font-bold text-orange-700 px-2">👨‍👩‍👧 ข้อมูลผู้ปกครอง</legend>
          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-          <div><label class="block text-sm font-semibold text-gray-700 mb-2">ชื่อผู้ปกครอง *</label> <input type="text" id="field-parent-name" placeholder="เช่น นายสมจิตต์ ใจดี" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none" required> <span class="field-error text-red-500 text-xs mt-1 hidden"></span>
+          <div><label class="block text-sm font-semibold text-gray-700 mb-2">ชื่อผู้ปกครอง *</label> <input type="text" id="field-parent-name" placeholder="เช่น นายสมจิตต์ ใจดี" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none" required>
           </div>
-          <div><label class="block text-sm font-semibold text-gray-700 mb-2">เบอร์ติดต่อ *</label> <input type="tel" id="field-parent-phone" placeholder="0xx-xxx-xxxx" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none" required> <span class="field-error text-red-500 text-xs mt-1 hidden"></span>
+          <div><label class="block text-sm font-semibold text-gray-700 mb-2">เบอร์ติดต่อ *</label> <input type="tel" id="field-parent-phone" placeholder="0xx-xxx-xxxx" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none" required>
           </div>
          </div>
         </fieldset><!-- Section: Image Upload -->
@@ -129,11 +119,11 @@
            <div id="upload-text">
             <p class="text-4xl mb-3">📷</p>
             <p class="text-gray-700 font-semibold">คลิกเพื่ออัปโหลดรูป หรือลากรูปมาวางที่นี่</p>
-            <p class="text-xs text-gray-500 mt-2">(JPG, PNG • สูงสุด 5MB • จะบีบอัดอัตโนมัติ)</p>
+            <p class="text-xs text-gray-500 mt-2">(JPG, PNG • สูงสุด 5MB)</p>
            </div>
            <div id="upload-preview" class="hidden"><img id="preview-image" class="max-h-48 mx-auto rounded-lg mb-3" alt="Preview"> <button type="button" onclick="clearUploadImage()" class="text-red-600 hover:text-red-800 font-semibold text-sm">❌ เปลี่ยนรูป</button>
            </div>
-          </div><span id="upload-error" class="text-red-500 text-xs mt-2 hidden"></span>
+          </div>
          </div>
         </fieldset><!-- Submit Button --> <button type="submit" id="btn-submit" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-4 rounded-lg transition-all transform hover:scale-105 text-lg shadow-lg"> ✅ ส่งคำขอ </button>
        </form>
@@ -189,10 +179,10 @@
     </div>
    </div>
   </div><!-- Modal: Detail Request -->
-  <div id="modal-detail" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-   <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto">
+  <div id="modal-detail" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-auto">
+   <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto my-8">
     <div class="sticky top-0 bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 flex justify-between items-center">
-     <h3 class="text-2xl font-bold">📄 รายละเอียด��ำขอ</h3><button onclick="closeDetailModal()" class="text-2xl hover:opacity-80">✕</button>
+     <h3 class="text-2xl font-bold">📄 รายละเอียดคำขอ</h3><button onclick="closeDetailModal()" class="text-2xl hover:opacity-80">✕</button>
     </div>
     <div id="modal-detail-content" class="p-6"></div>
    </div>
@@ -214,12 +204,13 @@
     let allRequests = [];
     let uploadedImage = null;
     let currentRejectId = null;
-    let dataSdkReady = false;
+
+    const STORAGE_KEY = 'leave_requests_data';
 
     // ========== INITIALIZATION ==========
     async function init() {
       initElementSDK();
-      await initDataSDK();
+      loadAllRequests();
       setDefaultDate();
     }
 
@@ -245,38 +236,30 @@
       updateAppTitle();
     }
 
-    async function initDataSDK() {
-      if (!window.dataSdk) {
-        console.warn('Data SDK not available - using demo mode');
-        dataSdkReady = false;
-        return;
-      }
-      
-      try {
-        const result = await window.dataSdk.init({
-          onDataChanged: (data) => {
-            allRequests = (data || []).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-            updateAllViews();
-          }
-        });
-        
-        if (result.isOk) {
-          dataSdkReady = true;
-          console.log('✅ Data SDK ready');
-        } else {
-          console.error('Data SDK init error:', result.error);
-          dataSdkReady = false;
-        }
-      } catch (err) {
-        console.error('Data SDK exception:', err);
-        dataSdkReady = false;
-      }
-    }
-
     function setDefaultDate() {
       const dateInput = document.getElementById('field-date');
       if (dateInput) {
         dateInput.valueAsDate = new Date();
+      }
+    }
+
+    // ========== STORAGE FUNCTIONS ==========
+    function loadAllRequests() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        allRequests = stored ? JSON.parse(stored) : [];
+        allRequests.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      } catch (e) {
+        console.error('Load error:', e);
+        allRequests = [];
+      }
+    }
+
+    function saveAllRequests() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(allRequests));
+      } catch (e) {
+        console.error('Save error:', e);
       }
     }
 
@@ -308,15 +291,17 @@
 
     function switchStudentTab(tab) {
       document.querySelectorAll('.student-tab').forEach(b => {
-        b.classList.toggle('bg-blue-500', b.dataset?.tab === tab || (tab === 'request' && !b.dataset?.tab));
-        b.classList.toggle('text-white', b.dataset?.tab === tab || (tab === 'request' && !b.dataset?.tab));
-        b.classList.toggle('bg-white', b.dataset?.tab !== tab && !(tab === 'request' && !b.dataset?.tab));
-        b.classList.toggle('text-gray-700', b.dataset?.tab !== tab && !(tab === 'request' && !b.dataset?.tab));
+        const isRequest = tab === 'request' && !b.textContent.includes('ประวัติ');
+        const isHistory = tab === 'history' && b.textContent.includes('ประวัติ');
+        
+        b.classList.toggle('bg-blue-500', isRequest || isHistory);
+        b.classList.toggle('text-white', isRequest || isHistory);
+        b.classList.toggle('bg-white', !(isRequest || isHistory));
+        b.classList.toggle('text-gray-700', !(isRequest || isHistory));
       });
 
-      document.querySelectorAll('.student-tab-content').forEach(c => {
-        c.classList.toggle('hidden', !c.id.includes(tab));
-      });
+      document.getElementById('student-tab-request').classList.toggle('hidden', tab !== 'request');
+      document.getElementById('student-tab-history').classList.toggle('hidden', tab !== 'history');
 
       if (tab === 'history') loadStudentHistory();
     }
@@ -342,7 +327,7 @@
         return;
       }
 
-      currentUser = { id, citizen, name: `${id}` };
+      currentUser = { id, citizen };
       currentRole = 'student';
       switchPage('student');
       updateStudentView();
@@ -456,7 +441,7 @@
         }
 
         if (compressed.length > 300 * 1024) {
-          showToast('❌ ไม่สามารถบีบอัดรูปได้ กรุณาใช้รูปที่เล็��กว่า', 'error');
+          showToast('❌ ไม่สามารถบีบอัดรูปได้ กรุณาใช้รูปที่เล็กกว่า', 'error');
           document.getElementById('file-input').value = '';
           return;
         }
@@ -481,18 +466,8 @@
     }
 
     // ========== FORM SUBMISSION ==========
-    async function submitRequest(e) {
+    function submitRequest(e) {
       e.preventDefault();
-
-      if (!dataSdkReady) {
-        showToast('⚠️ ระบบย��งไม่พร้อม กรุณารอสักครู่...', 'info');
-        return;
-      }
-
-      if (allRequests.length >= 999) {
-        showToast('❌ ระบบเต็ม กรุณาติดต่อผู้ดูแล', 'error');
-        return;
-      }
 
       const name = document.getElementById('field-name').value.trim();
       const classroom = document.getElementById('field-class').value.trim();
@@ -513,7 +488,8 @@
       btn.innerHTML = '<span class="inline-flex items-center gap-2"><span class="spinner"></span> กำลังส่ง...</span>';
 
       try {
-        const result = await window.dataSdk.create({
+        const newRequest = {
+          id: Date.now().toString(),
           student_id: currentUser.id,
           citizen_id: currentUser.citizen,
           student_name: name,
@@ -530,22 +506,18 @@
           created_at: new Date().toISOString(),
           approved_by: '',
           approved_at: ''
-        });
+        };
 
-        if (result.isOk) {
-          showToast('✅ ส่งคำขอสำเร็จ');
-          document.getElementById('form-request').reset();
-          clearUploadImage();
-          setDefaultDate();
-          setTimeout(() => switchStudentTab('history'), 1000);
-        } else {
-          const errorMsg = result.error?.message || 'เกิดข้อผิดพลาด';
-          showToast(`❌ ${errorMsg}`, 'error');
-          console.error('Submit error:', result.error);
-        }
+        allRequests.unshift(newRequest);
+        saveAllRequests();
+
+        showToast('✅ ส่งคำขอสำเร็จ');
+        document.getElementById('form-request').reset();
+        clearUploadImage();
+        setDefaultDate();
+        setTimeout(() => switchStudentTab('history'), 1000);
       } catch (err) {
         showToast(`❌ ${err.message}`, 'error');
-        console.error('Catch error:', err);
       } finally {
         btn.disabled = false;
         btn.innerHTML = '✅ ส่งคำขอ';
@@ -655,14 +627,14 @@
             </div>
 
             <div class="space-y-2">
-              <button onclick="showDetailModal('${r.__backendId}')" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition">
+              <button onclick="showDetailModal('${r.id}')" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition">
                 📄 ดูรายละเอียด
               </button>
               ${r.status === 'pending' ? `
-                <button onclick="approveTeacherRequest('${r.__backendId}')" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition">
+                <button onclick="approveTeacherRequest('${r.id}')" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition">
                   ✅ อนุมัติ
                 </button>
-                <button onclick="openRejectModal('${r.__backendId}')" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition">
+                <button onclick="openRejectModal('${r.id}')" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition">
                   ❌ ไม่อนุมัติ
                 </button>
               ` : ''}
@@ -674,7 +646,7 @@
 
     // ========== MODALS ==========
     function showDetailModal(id) {
-      const req = allRequests.find(r => r.__backendId === id);
+      const req = allRequests.find(r => r.id === id);
       if (!req) return;
 
       const content = document.getElementById('modal-detail-content');
@@ -770,58 +742,40 @@
     }
 
     // ========== TEACHER ACTIONS ==========
-    async function approveTeacherRequest(id) {
-      const req = allRequests.find(r => r.__backendId === id);
+    function approveTeacherRequest(id) {
+      const req = allRequests.find(r => r.id === id);
       if (!req) return;
 
-      try {
-        const result = await window.dataSdk.update({
-          ...req,
-          status: 'approved',
-          approved_by: 'ครู',
-          approved_at: new Date().toISOString()
-        });
+      req.status = 'approved';
+      req.approved_by = 'ครู';
+      req.approved_at = new Date().toISOString();
 
-        if (result.isOk) {
-          showToast('✅ อนุมัติสำเร็จ');
-          closeDetailModal();
-        } else {
-          showToast(`❌ ${result.error?.message}`, 'error');
-        }
-      } catch (err) {
-        showToast(`❌ ${err.message}`, 'error');
-      }
+      saveAllRequests();
+      showToast('✅ อนุมัติสำเร็จ');
+      closeDetailModal();
+      updateTeacherView();
     }
 
-    async function submitReject() {
+    function submitReject() {
       const reason = document.getElementById('reject-reason-input').value.trim();
       if (!reason) {
         showToast('❌ กรุณาระบุเหตุผล', 'error');
         return;
       }
 
-      const req = allRequests.find(r => r.__backendId === currentRejectId);
+      const req = allRequests.find(r => r.id === currentRejectId);
       if (!req) return;
 
-      try {
-        const result = await window.dataSdk.update({
-          ...req,
-          status: 'rejected',
-          reject_reason: reason,
-          approved_by: 'ครู',
-          approved_at: new Date().toISOString()
-        });
+      req.status = 'rejected';
+      req.reject_reason = reason;
+      req.approved_by = 'ครู';
+      req.approved_at = new Date().toISOString();
 
-        if (result.isOk) {
-          showToast('✅ บันทึกสำเร็จ');
-          closeRejectModal();
-          closeDetailModal();
-        } else {
-          showToast(`�� ${result.error?.message}`, 'error');
-        }
-      } catch (err) {
-        showToast(`❌ ${err.message}`, 'error');
-      }
+      saveAllRequests();
+      showToast('✅ บันทึกสำเร็จ');
+      closeRejectModal();
+      closeDetailModal();
+      updateTeacherView();
     }
 
     // ========== UTILITIES ==========
@@ -829,11 +783,6 @@
       document.querySelectorAll('input, textarea').forEach(el => el.value = '');
       document.getElementById('file-input').value = '';
       clearUploadImage();
-    }
-
-    function updateAllViews() {
-      if (currentRole === 'teacher') updateTeacherView();
-      else if (currentRole === 'student' && !document.getElementById('student-tab-history').classList.contains('hidden')) loadStudentHistory();
     }
 
     function updateAppTitle() {
@@ -888,5 +837,5 @@
     // Start
     init();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cb839f427c8a186',t:'MTc3MDY5MTA2NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cb843f8d0c4a193',t:'MTc3MDY5MTQ3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
