@@ -214,6 +214,7 @@
     let allRequests = [];
     let uploadedImage = null;
     let currentRejectId = null;
+    let dataSdkReady = false;
 
     // ========== INITIALIZATION ==========
     async function init() {
@@ -245,15 +246,30 @@
     }
 
     async function initDataSDK() {
-      if (!window.dataSdk) return;
-      const result = await window.dataSdk.init({
-        onDataChanged: (data) => {
-          allRequests = (data || []).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-          updateAllViews();
+      if (!window.dataSdk) {
+        console.warn('Data SDK not available');
+        dataSdkReady = false;
+        return;
+      }
+      
+      try {
+        const result = await window.dataSdk.init({
+          onDataChanged: (data) => {
+            allRequests = (data || []).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            updateAllViews();
+          }
+        });
+        
+        if (result.isOk) {
+          dataSdkReady = true;
+          console.log('Data SDK initialized successfully');
+        } else {
+          dataSdkReady = false;
+          console.error('Data SDK init failed:', result.error);
         }
-      });
-      if (!result.isOk) {
-        showToast('⚠️ ข้อผิดพลาดการเชื่อมต่อฐานข้อมูล', 'error');
+      } catch (err) {
+        dataSdkReady = false;
+        console.error('Data SDK error:', err);
       }
     }
 
@@ -317,7 +333,6 @@
       const id = document.getElementById('student-id-input').value.trim();
       const citizen = document.getElementById('student-citizen-input').value.trim();
 
-      // Validate
       if (!id || !citizen) {
         showToast('❌ กรุณากรอกข้อมูลให้ครบ', 'error');
         return;
@@ -377,7 +392,7 @@
       const file = e.target.files[0];
       if (!file) return;
 
-      const maxSize = 5 * 1024 * 1024; // 5MB
+      const maxSize = 5 * 1024 * 1024;
       if (file.size > maxSize) {
         showToast('❌ ไฟล์ใหญ่เกินไป (ขีดจำกัด 5MB)', 'error');
         document.getElementById('file-input').value = '';
@@ -412,7 +427,6 @@
         let { width: w, height: h } = img;
         const maxDim = 1200;
 
-        // ลดขนาด
         if (w > h) {
           if (w > maxDim) {
             h = Math.round((h * maxDim) / w);
@@ -433,7 +447,6 @@
         ctx.fillRect(0, 0, w, h);
         ctx.drawImage(img, 0, 0, w, h);
 
-        // บีบอัด
         let quality = 0.8;
         let compressed = canvas.toDataURL('image/jpeg', quality);
 
@@ -452,7 +465,6 @@
         const sizeKB = Math.round(compressed.length / 1024);
         showToast(`✅ อัปโหลดสำเร็จ (${sizeKB}KB)`);
 
-        // Show preview
         document.getElementById('preview-image').src = uploadedImage;
         document.getElementById('upload-text').classList.add('hidden');
         document.getElementById('upload-preview').classList.remove('hidden');
@@ -472,8 +484,8 @@
     async function submitRequest(e) {
       e.preventDefault();
 
-      if (!window.dataSdk) {
-        showToast('❌ ระบบขัดข้อง', 'error');
+      if (!dataSdkReady) {
+        showToast('⚠️ ระบบยังไม่พร้อม กรุณารอสักครู่...', 'info');
         return;
       }
 
@@ -482,7 +494,6 @@
         return;
       }
 
-      // Collect data
       const name = document.getElementById('field-name').value.trim();
       const classroom = document.getElementById('field-class').value.trim();
       const date = document.getElementById('field-date').value;
@@ -492,7 +503,6 @@
       const parentName = document.getElementById('field-parent-name').value.trim();
       const parentPhone = document.getElementById('field-parent-phone').value.trim();
 
-      // Validate all fields
       if (!name || !classroom || !date || !timeOut || !reason || !parentName || !parentPhone) {
         showToast('❌ กรุณากรอกข้อมูลให้ครบถ้วน (*)', 'error');
         return;
@@ -529,10 +539,13 @@
           setDefaultDate();
           setTimeout(() => switchStudentTab('history'), 1000);
         } else {
-          showToast(`❌ ${result.error?.message || 'เกิดข้อผิดพลาด'}`, 'error');
+          const errorMsg = result.error?.message || 'เกิดข้อผิดพลาด';
+          showToast(`❌ ${errorMsg}`, 'error');
+          console.error('Submit error:', result.error);
         }
       } catch (err) {
         showToast(`❌ ${err.message}`, 'error');
+        console.error('Catch error:', err);
       } finally {
         btn.disabled = false;
         btn.innerHTML = '✅ ส่งคำขอ';
@@ -875,5 +888,5 @@
     // Start
     init();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cb8282d3485a192',t:'MTc3MDY5MDMzNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cb830dda48998e2',t:'MTc3MDY5MDY5My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
