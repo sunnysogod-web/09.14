@@ -13,644 +13,575 @@
       box-sizing: border-box;
       font-family: 'Kanit', sans-serif;
     }
-
-    * {
-      font-family: 'Kanit', sans-serif;
+    * { font-family: 'Kanit', sans-serif; }
+    
+    html, body, #app {
+      width: 100%;
+      height: 100%;
     }
 
     @keyframes slideDown {
-      from {
-        transform: translateY(-20px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    .animate-slide { animation: slideDown 0.4s ease-out; }
+    .animate-fade { animation: fadeIn 0.4s ease-out; }
+    .spinner { animation: spin 1s linear infinite; width: 20px; height: 20px; border: 3px solid #e5e7eb; border-top-color: #3b82f6; border-radius: 50%; }
+
+    input, textarea, select {
+      font-family: 'Kanit', sans-serif;
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
+    .error-shake {
+      animation: shake 0.3s;
     }
 
-    @keyframes pulse {
-      0%, 100% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.5;
-      }
-    }
-
-    .animate-slide-down {
-      animation: slideDown 0.3s ease-out;
-    }
-
-    .animate-fade-in {
-      animation: fadeIn 0.3s ease-out;
-    }
-
-    .loading-spin {
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      from {
-        transform: rotate(0deg);
-      }
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .input-focus {
-      @apply focus:ring-2 focus:ring-blue-500 focus:border-transparent;
-    }
-
-    .card-hover {
-      @apply transition-all duration-200 hover:shadow-lg;
-    }
-
-    .btn-loading {
-      @apply opacity-70 cursor-not-allowed;
-    }
-
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: #f1f5f9;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #3b82f6;
-      border-radius: 10px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: #2563eb;
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
     }
   </style>
   <style>@view-transition { navigation: auto; }</style>
  </head>
- <body class="h-full overflow-auto bg-gradient-to-br from-blue-50 via-white to-blue-50">
-  <div id="app" class="w-full h-full"><!-- Toast Container -->
-   <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div><!-- Login Page -->
-   <div id="login-page" class="min-h-full flex items-center justify-center p-4">
-    <div class="w-full max-w-md animate-fade-in">
-     <div class="bg-white rounded-2xl shadow-xl p-8 border-t-4 border-blue-500">
-      <div class="text-center mb-8">
-       <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4"><span class="text-3xl">📚</span>
+ <body class="h-full overflow-auto bg-gradient-to-br from-blue-50 via-white to-blue-100">
+  <div id="app" class="w-full h-full flex flex-col"><!-- Toast Container -->
+   <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-3"></div><!-- Page: Login -->
+   <div id="page-login" class="w-full h-full flex items-center justify-center p-4">
+    <div class="w-full max-w-md animate-fade">
+     <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border-t-4 border-blue-500"><!-- Header -->
+      <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-8 text-center">
+       <div class="text-5xl mb-3">
+        📚
        </div>
-       <h1 id="login-title" class="text-3xl font-bold text-gray-800 mb-2">ระบบขอลากลับบ้าน</h1>
-       <p class="text-gray-500">เข้าสู่ระบบเพื่อดำเนินการ</p>
-      </div><!-- Tab Navigation -->
-      <div class="flex rounded-lg bg-gray-100 p-1 mb-6"><button onclick="switchLoginTab('student')" id="student-tab" class="flex-1 py-2 px-4 rounded-md font-medium text-sm transition-all bg-white text-blue-600 shadow"> นักเรียน </button> <button onclick="switchLoginTab('teacher')" id="teacher-tab" class="flex-1 py-2 px-4 rounded-md font-medium text-sm transition-all text-gray-600"> ครู </button>
-      </div><!-- Student Login -->
-      <form id="student-login" onsubmit="handleStudentLogin(event)" class="space-y-4">
-       <div><label class="block text-sm font-medium text-gray-700 mb-2">รหัสนักเรียน</label> <input type="text" id="student-id" placeholder="เช่น 001" class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none" required>
-       </div>
-       <div><label class="block text-sm font-medium text-gray-700 mb-2">���ลขประจำตัวประชาชน</label> <input type="text" id="student-citizen" placeholder="13 หลัก" maxlength="13" class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none" required>
-       </div><button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition-colors"> เข้าสู่ระบบ </button>
-      </form><!-- Teacher Login -->
-      <form id="teacher-login" onsubmit="handleTeacherLogin(event)" class="space-y-4 hidden">
-       <div><label class="block text-sm font-medium text-gray-700 mb-2">ชื่อผู้��ช้</label> <input type="text" id="teacher-username" placeholder="admin" class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none" required>
-       </div>
-       <div><label class="block text-sm font-medium text-gray-700 mb-2">รหัสผ่าน</label> <input type="password" id="teacher-password" placeholder="รหัสผ่าน" class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none" required>
-       </div><button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition-colors"> เข้าสู่ระบบ </button>
-       <p class="text-xs text-center text-gray-400 mt-4">ทดสอบ: admin / 1234</p>
-      </form>
+       <h1 id="app-title" class="text-2xl font-bold text-white">ระบบขอลากลับบ้าน</h1>
+      </div><!-- Content -->
+      <div class="p-8"><!-- Tab Buttons -->
+       <div class="flex rounded-lg bg-gray-100 p-1 mb-6 gap-1"><button onclick="switchRole('student')" class="flex-1 py-2 px-4 rounded font-semibold text-sm transition-all role-tab-btn bg-white text-blue-600 shadow" data-role="student"> นักเรียน </button> <button onclick="switchRole('teacher')" class="flex-1 py-2 px-4 rounded font-semibold text-sm transition-all role-tab-btn text-gray-600 hover:text-gray-800" data-role="teacher"> ครู </button>
+       </div><!-- Form: Student Login -->
+       <form id="form-student-login" onsubmit="loginStudent(event)" class="space-y-4 role-form" data-role="student">
+        <div><label class="block text-sm font-semibold text-gray-700 mb-2">🔑 รหัสนักเรียน</label> <input type="text" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition" id="student-id-input" placeholder="เช่น 001" required> <span class="error-msg text-red-500 text-xs mt-1 hidden"></span>
+        </div>
+        <div><label class="block text-sm font-semibold text-gray-700 mb-2">🆔 เลขประจำตัวประชาชน</label> <input type="text" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition" id="student-citizen-input" placeholder="13 หลัก" maxlength="13" required> <span class="error-msg text-red-500 text-xs mt-1 hidden"></span>
+        </div><button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 rounded-lg transition-all transform hover:scale-105"> เข้าสู่ระบบ </button>
+       </form><!-- Form: Teacher Login -->
+       <form id="form-teacher-login" onsubmit="loginTeacher(event)" class="space-y-4 role-form hidden" data-role="teacher">
+        <div><label class="block text-sm font-semibold text-gray-700 mb-2">👤 ชื่อผู้ใช้</label> <input type="text" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition" id="teacher-user-input" placeholder="admin" required> <span class="error-msg text-red-500 text-xs mt-1 hidden"></span>
+        </div>
+        <div><label class="block text-sm font-semibold text-gray-700 mb-2">🔐 รหัสผ่าน</label> <input type="password" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition" id="teacher-pass-input" placeholder="รหัสผ่าน" required> <span class="error-msg text-red-500 text-xs mt-1 hidden"></span>
+        </div><button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 rounded-lg transition-all transform hover:scale-105"> เข้าสู่ระบบ </button>
+        <p class="text-center text-xs text-gray-500 mt-4">ทดสอบ: admin / 1234</p>
+       </form>
+      </div>
      </div>
     </div>
-   </div><!-- Student Dashboard -->
-   <div id="student-dashboard" class="hidden min-h-full p-4">
-    <div class="max-w-3xl mx-auto"><!-- Header -->
-     <div class="bg-white rounded-lg shadow-md p-4 mb-6 flex items-center justify-between animate-slide-down">
+   </div><!-- Page: Student Dashboard -->
+   <div id="page-student" class="hidden w-full h-full flex flex-col overflow-auto">
+    <div class="flex-1 p-6 max-w-4xl mx-auto w-full"><!-- Header -->
+     <div class="bg-white rounded-xl shadow-md p-6 mb-6 flex justify-between items-center animate-slide">
       <div>
-       <h2 class="text-2xl font-bold text-gray-800">ยินดีต้อนรับ</h2>
-       <p id="student-info" class="text-gray-600">เรียน...</p>
-      </div><button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"> ออกจากระบบ </button>
-     </div><!-- Tabs -->
-     <div class="flex gap-2 mb-6"><button onclick="switchStudentSection('form')" id="form-tab" class="px-4 py-2 bg-white border-2 border-blue-500 text-blue-600 rounded-lg font-medium shadow"> ส��งคำขอ </button> <button onclick="switchStudentSection('history')" id="history-tab" class="px-4 py-2 bg-white border-2 border-gray-300 text-gray-600 rounded-lg font-medium shadow hover:border-blue-500 transition-colors"> ประวัติ��องฉัน </button>
-     </div><!-- Request Form -->
-     <div id="form-section" class="bg-white rounded-lg shadow-md p-6 animate-fade-in">
-      <h3 class="text-xl font-bold text-gray-800 mb-6">แบบฟอร์มขอลากลับบ้าน</h3>
-      <form id="request-form" onsubmit="submitRequest(event)" class="space-y-6"><!-- Personal Info -->
-       <div>
-        <h4 class="text-lg font-semibold text-gray-700 mb-4">ข้อมูลนักเรียน</h4>
-        <div class="grid grid-cols-2 gap-4">
-         <div><label class="block text-sm font-medium text-gray-700 mb-2">ชื่อ-นามสกุล</label> <input type="text" id="form-name" placeholder="ชื่อ นามสกุล" class="w-full px-3 py-2 border border-gray-300 rounded-lg input-focus outline-none" required>
+       <h2 class="text-3xl font-bold text-gray-800">สวัสดี 👋</h2>
+       <p id="student-name-display" class="text-gray-600 mt-1">เรียน...</p>
+      </div><button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-2 rounded-lg transition"> ออกจากระบบ </button>
+     </div><!-- Tab Navigation -->
+     <div class="flex gap-2 mb-6"><button onclick="switchStudentTab('request')" class="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg shadow student-tab active"> ✉️ ส่งคำขอ </button> <button onclick="switchStudentTab('history')" class="px-6 py-3 bg-white text-gray-700 font-bold rounded-lg shadow student-tab hover:bg-gray-50"> 📋 ประวัติของฉัน </button>
+     </div><!-- Tab: Request Form -->
+     <div id="student-tab-request" class="student-tab-content">
+      <div class="bg-white rounded-xl shadow-md p-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-6">📝 แบบฟอร์มขอลากลับบ้าน</h3>
+       <form id="form-request" onsubmit="submitRequest(event)" class="space-y-8"><!-- Section: Student Info -->
+        <fieldset class="border-2 border-blue-200 rounded-lg p-6 bg-blue-50"><legend class="text-lg font-bold text-blue-700 px-2">👤 ข้อมูลนักเรียน</legend>
+         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+          <div><label class="block text-sm font-semibold text-gray-700 mb-2">ชื่อ-นามสกุล *</label> <input type="text" id="field-name" placeholder="เช่น สมชาย ใจดี" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none" required> <span class="field-error text-red-500 text-xs mt-1 hidden"></span>
+          </div>
+          <div><label class="block text-sm font-semibold text-gray-700 mb-2">ชั้น/ห้อง *</label> <input type="text" id="field-class" placeholder="เช่น ม.3/1" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none" required> <span class="field-error text-red-500 text-xs mt-1 hidden"></span>
+          </div>
          </div>
-         <div><label class="block text-sm font-medium text-gray-700 mb-2">ชั้น/ห้อง</label> <input type="text" id="form-class" placeholder="เช่น ม.3/1" class="w-full px-3 py-2 border border-gray-300 rounded-lg input-focus outline-none" required>
+        </fieldset><!-- Section: Leave Details -->
+        <fieldset class="border-2 border-green-200 rounded-lg p-6 bg-green-50"><legend class="text-lg font-bold text-green-700 px-2">📅 รายละเอียดการลา</legend>
+         <div class="space-y-6 mt-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+           <div><label class="block text-sm font-semibold text-gray-700 mb-2">วันที่ลา *</label> <input type="date" id="field-date" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none" required> <span class="field-error text-red-500 text-xs mt-1 hidden"></span>
+           </div>
+           <div><label class="block text-sm font-semibold text-gray-700 mb-2">เวลาออก *</label> <input type="time" id="field-time-out" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none" required> <span class="field-error text-red-500 text-xs mt-1 hidden"></span>
+           </div>
+           <div><label class="block text-sm font-semibold text-gray-700 mb-2">เวลากลับ (ถ้ามี)</label> <input type="time" id="field-time-back" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none">
+           </div>
+          </div>
+          <div><label class="block text-sm font-semibold text-gray-700 mb-2">เหตุผลการลา *</label> <textarea id="field-reason" placeholder="ระบุเหตุผลการลาของคุณ" rows="4" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none" required></textarea> <span class="field-error text-red-500 text-xs mt-1 hidden"></span>
+          </div>
          </div>
+        </fieldset><!-- Section: Guardian Info -->
+        <fieldset class="border-2 border-orange-200 rounded-lg p-6 bg-orange-50"><legend class="text-lg font-bold text-orange-700 px-2">👨‍👩‍👧 ข้อมูลผู้ปกครอง</legend>
+         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+          <div><label class="block text-sm font-semibold text-gray-700 mb-2">ชื่อผู้ปกครอง *</label> <input type="text" id="field-parent-name" placeholder="เช่น นายสมจิตต์ ใจดี" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none" required> <span class="field-error text-red-500 text-xs mt-1 hidden"></span>
+          </div>
+          <div><label class="block text-sm font-semibold text-gray-700 mb-2">เบอร์ติดต่อ *</label> <input type="tel" id="field-parent-phone" placeholder="0xx-xxx-xxxx" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none" required> <span class="field-error text-red-500 text-xs mt-1 hidden"></span>
+          </div>
+         </div>
+        </fieldset><!-- Section: Image Upload -->
+        <fieldset class="border-2 border-purple-200 rounded-lg p-6 bg-purple-50"><legend class="text-lg font-bold text-purple-700 px-2">📸 รูปผู้ปกครองที่มารับ</legend>
+         <div class="mt-4">
+          <div id="upload-area" class="border-3 border-dashed border-purple-400 rounded-lg p-8 text-center cursor-pointer hover:border-purple-600 hover:bg-purple-100 transition" onclick="document.getElementById('file-input').click()"><input type="file" id="file-input" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+           <div id="upload-text">
+            <p class="text-4xl mb-3">📷</p>
+            <p class="text-gray-700 font-semibold">คลิกเพื่ออัปโหลดรูป หรือลากรูปมาวางที่นี่</p>
+            <p class="text-xs text-gray-500 mt-2">(JPG, PNG • สูงสุด 5MB • จะบีบอัดอัตโนมัติ)</p>
+           </div>
+           <div id="upload-preview" class="hidden"><img id="preview-image" class="max-h-48 mx-auto rounded-lg mb-3" alt="Preview"> <button type="button" onclick="clearUploadImage()" class="text-red-600 hover:text-red-800 font-semibold text-sm">❌ เปลี่ยนรูป</button>
+           </div>
+          </div><span id="upload-error" class="text-red-500 text-xs mt-2 hidden"></span>
+         </div>
+        </fieldset><!-- Submit Button --> <button type="submit" id="btn-submit" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-4 rounded-lg transition-all transform hover:scale-105 text-lg shadow-lg"> ✅ ส่งคำขอ </button>
+       </form>
+      </div>
+     </div><!-- Tab: History -->
+     <div id="student-tab-history" class="student-tab-content hidden">
+      <div class="bg-white rounded-xl shadow-md p-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-6">📋 ประวัติคำขอของฉัน</h3>
+       <div id="history-list" class="space-y-4">
+        <div class="text-center text-gray-400 py-12">
+         <p class="text-lg">ยังไม่มีประวัติ</p>
         </div>
-       </div><!-- Leave Details -->
-       <div>
-        <h4 class="text-lg font-semibold text-gray-700 mb-4">รายละเอียดการลา</h4>
-        <div class="grid grid-cols-2 gap-4">
-         <div><label class="block text-sm font-medium text-gray-700 mb-2">วันที่ลา</label> <input type="date" id="form-date" class="w-full px-3 py-2 border border-gray-300 rounded-lg input-focus outline-none" required>
-         </div>
-         <div><label class="block text-sm font-medium text-gray-700 mb-2">เวลาออก</label> <input type="time" id="form-time-out" class="w-full px-3 py-2 border border-gray-300 rounded-lg input-focus outline-none" required>
-         </div>
-         <div><label class="block text-sm font-medium text-gray-700 mb-2">เวลากลับ (ถ้ามี)</label> <input type="time" id="form-time-back" class="w-full px-3 py-2 border border-gray-300 rounded-lg input-focus outline-none">
-         </div>
-        </div>
-        <div class="mt-4"><label class="block text-sm font-medium text-gray-700 mb-2">เหตุผล</label> <textarea id="form-reason" placeholder="ระบุเหตุผลการลา" class="w-full px-3 py-2 border border-gray-300 rounded-lg input-focus outline-none" rows="3" required></textarea>
-        </div>
-       </div><!-- Guardian Info -->
-       <div>
-        <h4 class="text-lg font-semibold text-gray-700 mb-4">ข้อมูลผู้ปกครอง</h4>
-        <div class="grid grid-cols-2 gap-4">
-         <div><label class="block text-sm font-medium text-gray-700 mb-2">ชื่อผู้ปกครอง</label> <input type="text" id="form-parent-name" placeholder="ชื่อ นามสกุล" class="w-full px-3 py-2 border border-gray-300 rounded-lg input-focus outline-none" required>
-         </div>
-         <div><label class="block text-sm font-medium text-gray-700 mb-2">เบอร์ติดต่อ</label> <input type="tel" id="form-parent-phone" placeholder="0xx-xxx-xxxx" class="w-full px-3 py-2 border border-gray-300 rounded-lg input-focus outline-none" required>
-         </div>
-        </div>
-       </div><!-- Image Upload -->
-       <div><label class="block text-sm font-medium text-gray-700 mb-2">รูปผู้ปกครองที่มารับ</label>
-        <div id="image-upload" class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-blue-500 transition-colors" onclick="document.getElementById('file-input').click()"><input type="file" id="file-input" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
-         <div id="upload-prompt">
-          <p class="text-2xl mb-2">📸</p>
-          <p class="text-gray-600">คลิกเพื่ออัปโหลดรูป</p>
-         </div>
-         <div id="image-preview" class="hidden"><img id="preview-img" class="max-h-40 mx-auto rounded-lg mb-2" alt="Preview"> <button type="button" onclick="clearImage()" class="text-red-500 text-sm hover:underline">ลบรูป</button>
-         </div>
-        </div>
-       </div><button type="submit" id="submit-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 rounded-lg transition-colors"> ส่งคำขอ </button>
-      </form>
-     </div><!-- History Section -->
-     <div id="history-section" class="hidden">
-      <div id="history-list" class="space-y-4">
-       <div class="text-center text-gray-500 py-8">
-        <p>ยังไม่มีประวัติ</p>
        </div>
       </div>
      </div>
     </div>
-   </div><!-- Teacher Dashboard -->
-   <div id="teacher-dashboard" class="hidden min-h-full p-4">
-    <div class="max-w-6xl mx-auto"><!-- Header -->
-     <div class="bg-white rounded-lg shadow-md p-4 mb-6 flex items-center justify-between animate-slide-down">
+   </div><!-- Page: Teacher Dashboard -->
+   <div id="page-teacher" class="hidden w-full h-full flex flex-col overflow-auto">
+    <div class="flex-1 p-6 max-w-6xl mx-auto w-full"><!-- Header -->
+     <div class="bg-white rounded-xl shadow-md p-6 mb-6 flex justify-between items-center animate-slide">
       <div>
-       <h2 class="text-2xl font-bold text-gray-800">ระบบจัดการคำขอ</h2>
-       <p class="text-gray-600">ตรวจสอบและอนุมัติคำขอลาของนักเรียน</p>
-      </div><button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"> ออกจากระบบ </button>
+       <h2 class="text-3xl font-bold text-gray-800">🎓 ระบบจัดการคำขอ</h2>
+       <p class="text-gray-600 mt-1">ตรวจสอบและอนุมัติคำขอลาของนักเรียน</p>
+      </div><button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-2 rounded-lg transition"> ออกจากระบบ </button>
      </div><!-- Stats -->
-     <div class="grid grid-cols-4 gap-4 mb-6">
-      <div class="bg-white rounded-lg shadow p-4 text-center">
-       <p class="text-gray-600 text-sm">รวมทั้งหมด</p>
-       <p id="stat-total" class="text-3xl font-bold text-gray-800">0</p>
+     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div class="bg-white rounded-lg shadow p-4 border-t-4 border-gray-400">
+       <p class="text-gray-600 text-sm font-semibold">รวมทั้งหมด</p>
+       <p id="stat-total" class="text-3xl font-bold text-gray-800 mt-2">0</p>
       </div>
-      <div class="bg-yellow-50 rounded-lg shadow p-4 text-center border border-yellow-200">
-       <p class="text-gray-600 text-sm">รอตรวจสอบ</p>
-       <p id="stat-pending" class="text-3xl font-bold text-yellow-600">0</p>
+      <div class="bg-yellow-50 rounded-lg shadow p-4 border-t-4 border-yellow-500">
+       <p class="text-yellow-700 text-sm font-semibold">⏳ รอตรวจสอบ</p>
+       <p id="stat-pending" class="text-3xl font-bold text-yellow-600 mt-2">0</p>
       </div>
-      <div class="bg-green-50 rounded-lg shadow p-4 text-center border border-green-200">
-       <p class="text-gray-600 text-sm">อน��มัติแล้ว</p>
-       <p id="stat-approved" class="text-3xl font-bold text-green-600">0</p>
+      <div class="bg-green-50 rounded-lg shadow p-4 border-t-4 border-green-500">
+       <p class="text-green-700 text-sm font-semibold">✅ อนุมัติแล้ว</p>
+       <p id="stat-approved" class="text-3xl font-bold text-green-600 mt-2">0</p>
       </div>
-      <div class="bg-red-50 rounded-lg shadow p-4 text-center border border-red-200">
-       <p class="text-gray-600 text-sm">ไม่อนุมัติ</p>
-       <p id="stat-rejected" class="text-3xl font-bold text-red-600">0</p>
+      <div class="bg-red-50 rounded-lg shadow p-4 border-t-4 border-red-500">
+       <p class="text-red-700 text-sm font-semibold">❌ ไม่อนุมัติ</p>
+       <p id="stat-rejected" class="text-3xl font-bold text-red-600 mt-2">0</p>
       </div>
      </div><!-- Search & Filter -->
-     <div class="bg-white rounded-lg shadow-md p-4 mb-6">
-      <div class="flex gap-3 flex-wrap"><input type="text" id="search-box" placeholder="ค้นหาชื่อ รหัส ชั้น..." class="flex-1 min-w-48 px-3 py-2 border border-gray-300 rounded-lg input-focus outline-none" oninput="filterRequests()"> <select id="status-filter" class="px-3 py-2 border border-gray-300 rounded-lg input-focus outline-none" onchange="filterRequests()"> <option value="">ทั้งหมด</option> <option value="pending">รอตรวจสอบ</option> <option value="approved">อนุมัติแล้ว</option> <option value="rejected">ไม่อนุมัติ</option> </select> <input type="date" id="date-filter" class="px-3 py-2 border border-gray-300 rounded-lg input-focus outline-none" onchange="filterRequests()">
+     <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+      <div class="flex flex-col md:flex-row gap-3"><input type="text" id="search-input" placeholder="ค้นหาชื่อ รหัส หรือชั้น..." class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none" oninput="filterRequests()"> <select id="status-select" class="px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none" onchange="filterRequests()"> <option value="">ทั้งหมด</option> <option value="pending">รอตรวจสอบ</option> <option value="approved">อนุมัติแล้ว</option> <option value="rejected">ไม่อนุมัติ</option> </select> <input type="date" id="date-select" class="px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none" onchange="filterRequests()">
       </div>
      </div><!-- Requests List -->
      <div id="requests-list" class="space-y-4">
-      <div class="text-center text-gray-500 py-8">
-       <p>ไม่มีคำขอ</p>
+      <div class="text-center text-gray-400 py-12">
+       <p class="text-lg">ไม่มีคำขอ</p>
       </div>
      </div>
     </div>
-   </div><!-- Detail Modal -->
-   <div id="detail-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-     <div class="p-6">
-      <div class="flex justify-between items-center mb-4">
-       <h3 class="text-2xl font-bold text-gray-800">รายละเอียดคำข���</h3><button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600 text-2xl">×</button>
-      </div>
-      <div id="detail-content"></div>
-     </div>
+   </div>
+  </div><!-- Modal: Detail Request -->
+  <div id="modal-detail" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+   <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto">
+    <div class="sticky top-0 bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 flex justify-between items-center">
+     <h3 class="text-2xl font-bold">📄 รายละเอียดคำขอ</h3><button onclick="closeDetailModal()" class="text-2xl hover:opacity-80">✕</button>
     </div>
-   </div><!-- Reject Modal -->
-   <div id="reject-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-     <h3 class="text-xl font-bold text-gray-800 mb-4">ไม่อนุมัติคำขอ</h3>
-     <p class="text-gray-600 mb-4">ระบุเหตุผลที่ไม่อนุมัติ:</p><textarea id="reject-input" placeholder="หมายเหตุ..." class="w-full px-3 py-2 border border-gray-300 rounded-lg input-focus outline-none" rows="3"></textarea>
-     <div class="flex gap-3 mt-6"><button onclick="closeRejectModal()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded-lg font-medium transition-colors"> ยกเลิก </button> <button onclick="submitReject()" class="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-medium transition-colors"> ยืนยัน </button>
-     </div>
+    <div id="modal-detail-content" class="p-6"></div>
+   </div>
+  </div><!-- Modal: Reject Reason -->
+  <div id="modal-reject" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+   <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-8">
+    <h3 class="text-2xl font-bold text-gray-800 mb-4">❌ ไม่อนุมัติคำขอ</h3>
+    <p class="text-gray-600 mb-4">ระบุเหตุผล:</p><textarea id="reject-reason-input" placeholder="เช่น ไม่มีเอกสารประกอบ..." rows="4" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-red-500 focus:outline-none"></textarea>
+    <div class="flex gap-3 mt-6"><button type="button" onclick="closeRejectModal()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 rounded-lg transition"> ยกเลิก </button> <button type="button" onclick="submitReject()" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-lg transition"> ยืนยัน </button>
     </div>
    </div>
   </div>
   <script>
-    const defaultConfig = {
-      school_name: 'โรงเรียนสามร้อยยอดวิทยาคม'
-    };
-
+    // ========== CONFIG & STATE ==========
+    const defaultConfig = { school_name: 'โรงเรียนสามร้อยยอดวิทยาคม' };
     let config = { ...defaultConfig };
-    let allRequests = [];
     let currentUser = null;
     let currentRole = null;
-    let uploadedImage = '';
+    let allRequests = [];
+    let uploadedImage = null;
     let currentRejectId = null;
-    let pollInterval = null;
 
-    // Initialize
+    // ========== INITIALIZATION ==========
     async function init() {
-      try {
-        // Element SDK
-        if (window.elementSdk) {
-          await window.elementSdk.init({
-            defaultConfig,
-            onConfigChange: async (newConfig) => {
-              config = { ...defaultConfig, ...newConfig };
-              updateUI();
-            },
-            mapToCapabilities: () => ({
-              recolorables: [],
-              borderables: [],
-              fontEditable: undefined,
-              fontSizeable: undefined
-            }),
-            mapToEditPanelValues: (cfg) => new Map([
-              ['school_name', cfg.school_name || defaultConfig.school_name]
-            ])
-          });
-          config = window.elementSdk.config || config;
+      initElementSDK();
+      await initDataSDK();
+      setDefaultDate();
+    }
+
+    function initElementSDK() {
+      if (!window.elementSdk) return;
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (newConfig) => {
+          config = { ...defaultConfig, ...newConfig };
+          updateAppTitle();
+        },
+        mapToCapabilities: () => ({
+          recolorables: [],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (cfg) => new Map([
+          ['school_name', cfg.school_name || defaultConfig.school_name]
+        ])
+      });
+      config = window.elementSdk.config || config;
+      updateAppTitle();
+    }
+
+    async function initDataSDK() {
+      if (!window.dataSdk) return;
+      const result = await window.dataSdk.init({
+        onDataChanged: (data) => {
+          allRequests = (data || []).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+          updateAllViews();
         }
-
-        // Data SDK
-        if (window.dataSdk) {
-          const result = await window.dataSdk.init({
-            onDataChanged: (data) => {
-              allRequests = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-              updateViews();
-            }
-          });
-        }
-
-        // Set default date
-        const today = new Date().toISOString().split('T')[0];
-        const dateInput = document.getElementById('form-date');
-        if (dateInput) dateInput.value = today;
-
-        updateUI();
-      } catch (err) {
-        console.error('Init error:', err);
+      });
+      if (!result.isOk) {
+        showToast('⚠️ ข้อผิดพลาดการเชื่อมต่อฐานข้อมูล', 'error');
       }
     }
 
-    function updateUI() {
-      const title = document.getElementById('login-title');
-      if (title) {
-        title.textContent = config.school_name || defaultConfig.school_name;
+    function setDefaultDate() {
+      const dateInput = document.getElementById('field-date');
+      if (dateInput) {
+        dateInput.valueAsDate = new Date();
       }
     }
 
-    // Toast
-    function showToast(message, type = 'success') {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      const colors = {
-        success: 'bg-green-500',
-        error: 'bg-red-500',
-        info: 'bg-blue-500'
-      };
-      toast.className = `${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg animate-slide-down`;
-      toast.textContent = message;
-      container.appendChild(toast);
-      setTimeout(() => toast.remove(), 3000);
-    }
-
-    // Login
-    function switchLoginTab(tab) {
-      const forms = ['student-login', 'teacher-login'];
-      const tabs = ['student-tab', 'teacher-tab'];
+    // ========== UI SWITCHING ==========
+    function switchRole(role) {
+      const tabs = document.querySelectorAll('.role-tab-btn');
+      const forms = document.querySelectorAll('.role-form');
       
-      forms.forEach(f => document.getElementById(f).classList.add('hidden'));
-      tabs.forEach(t => document.getElementById(t).classList.remove('bg-white', 'shadow', 'text-blue-600'));
+      tabs.forEach(t => {
+        if (t.dataset.role === role) {
+          t.classList.add('bg-white', 'text-blue-600', 'shadow');
+          t.classList.remove('text-gray-600');
+        } else {
+          t.classList.remove('bg-white', 'text-blue-600', 'shadow');
+          t.classList.add('text-gray-600');
+        }
+      });
 
-      document.getElementById(`${tab}-login`).classList.remove('hidden');
-      document.getElementById(`${tab}-tab`).classList.add('bg-white', 'shadow', 'text-blue-600');
+      forms.forEach(f => {
+        if (f.dataset.role === role) {
+          f.classList.remove('hidden');
+        } else {
+          f.classList.add('hidden');
+        }
+      });
+
+      clearAllInputs();
     }
 
-    function handleStudentLogin(e) {
-      e.preventDefault();
-      const id = document.getElementById('student-id').value.trim();
-      const citizen = document.getElementById('student-citizen').value.trim();
+    function switchStudentTab(tab) {
+      document.querySelectorAll('.student-tab').forEach(b => {
+        b.classList.toggle('bg-blue-500', b.dataset?.tab === tab || (tab === 'request' && !b.dataset?.tab));
+        b.classList.toggle('text-white', b.dataset?.tab === tab || (tab === 'request' && !b.dataset?.tab));
+        b.classList.toggle('bg-white', b.dataset?.tab !== tab && !(tab === 'request' && !b.dataset?.tab));
+        b.classList.toggle('text-gray-700', b.dataset?.tab !== tab && !(tab === 'request' && !b.dataset?.tab));
+      });
 
-      if (citizen.length !== 13) {
-        showToast('กรุณาใส่เลขประชาชน 13 หลัก', 'error');
+      document.querySelectorAll('.student-tab-content').forEach(c => {
+        c.classList.toggle('hidden', !c.id.includes(tab));
+      });
+
+      if (tab === 'history') loadStudentHistory();
+    }
+
+    function switchPage(page) {
+      document.getElementById('page-login').classList.toggle('hidden', page !== 'login');
+      document.getElementById('page-student').classList.toggle('hidden', page !== 'student');
+      document.getElementById('page-teacher').classList.toggle('hidden', page !== 'teacher');
+    }
+
+    // ========== LOGIN & LOGOUT ==========
+    function loginStudent(e) {
+      e.preventDefault();
+      const id = document.getElementById('student-id-input').value.trim();
+      const citizen = document.getElementById('student-citizen-input').value.trim();
+
+      // Validate
+      if (!id || !citizen) {
+        showToast('❌ กรุณากรอกข้อมูลให้ครบ', 'error');
+        return;
+      }
+      if (!/^\d{13}$/.test(citizen)) {
+        showToast('❌ เลขประชาชนต้องเป็นตัวเลข 13 หลัก', 'error');
         return;
       }
 
-      currentUser = { id, citizen };
+      currentUser = { id, citizen, name: `${id}` };
       currentRole = 'student';
       switchPage('student');
-      showToast('เข้าสู่ระบบสำเร็จ');
       updateStudentView();
+      showToast('✅ เข้าสู่ระบบสำเร็จ');
     }
 
-    function handleTeacherLogin(e) {
+    function loginTeacher(e) {
       e.preventDefault();
-      const username = document.getElementById('teacher-username').value;
-      const password = document.getElementById('teacher-password').value;
+      const username = document.getElementById('teacher-user-input').value.trim();
+      const password = document.getElementById('teacher-pass-input').value;
 
       if (username === 'admin' && password === '1234') {
         currentUser = { username };
         currentRole = 'teacher';
         switchPage('teacher');
-        showToast('เข้าสู่ระบบครูสำเร็จ');
         updateTeacherView();
+        showToast('✅ เข้าสู่ระบบครูสำเร็จ');
       } else {
-        showToast('ชื่อผู้ใช้หรือ��หัสผ่านไม่ถูกต้อง', 'error');
+        showToast('❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง', 'error');
       }
     }
 
     function logout() {
       currentUser = null;
       currentRole = null;
-      uploadedImage = '';
-      if (pollInterval) clearInterval(pollInterval);
-      document.getElementById('request-form').reset();
-      document.getElementById('student-id').value = '';
-      document.getElementById('student-citizen').value = '';
-      document.getElementById('teacher-username').value = '';
-      document.getElementById('teacher-password').value = '';
+      uploadedImage = null;
+      clearAllInputs();
       switchPage('login');
-      showToast('ออกจากระบบแล้ว');
+      showToast('👋 ออกจากระบบแล้ว');
     }
 
-    function switchPage(page) {
-      document.getElementById('login-page').classList.toggle('hidden', page !== 'login');
-      document.getElementById('student-dashboard').classList.toggle('hidden', page !== 'student');
-      document.getElementById('teacher-dashboard').classList.toggle('hidden', page !== 'teacher');
+    // ========== TOAST NOTIFICATION ==========
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      
+      const bgColor = type === 'error' ? 'bg-red-500' : type === 'info' ? 'bg-blue-500' : 'bg-green-500';
+      toast.className = `${bgColor} text-white px-6 py-4 rounded-lg shadow-lg font-semibold animate-slide text-sm md:text-base`;
+      toast.textContent = message;
+      
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3500);
     }
 
-    // Student
-    function switchStudentSection(section) {
-      const formTab = document.getElementById('form-tab');
-      const historyTab = document.getElementById('history-tab');
-      const formSection = document.getElementById('form-section');
-      const historySection = document.getElementById('history-section');
-
-      if (section === 'form') {
-        formTab.classList.remove('border-gray-300', 'text-gray-600');
-        formTab.classList.add('border-blue-500', 'text-blue-600');
-        historyTab.classList.add('border-gray-300', 'text-gray-600');
-        historyTab.classList.remove('border-blue-500', 'text-blue-600');
-        formSection.classList.remove('hidden');
-        historySection.classList.add('hidden');
-      } else {
-        historyTab.classList.remove('border-gray-300', 'text-gray-600');
-        historyTab.classList.add('border-blue-500', 'text-blue-600');
-        formTab.classList.add('border-gray-300', 'text-gray-600');
-        formTab.classList.remove('border-blue-500', 'text-blue-600');
-        historySection.classList.remove('hidden');
-        formSection.classList.add('hidden');
-        loadStudentHistory();
-      }
-    }
-
+    // ========== IMAGE UPLOAD ==========
     function handleImageUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
 
-      // ตรวจสอบประเภทไฟล์
-      if (!file.type.startsWith('image/')) {
-        showToast('กรุณาเลือกไฟล์รูปภาพ', 'error');
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        showToast('❌ ไฟล์ใหญ่เกินไป (ขีดจำกัด 5MB)', 'error');
         document.getElementById('file-input').value = '';
         return;
       }
 
-      if (file.size > 10 * 1024 * 1024) {
-        showToast('ไฟล์ใหญ่เกินไป (ขีดจำกัด 10MB)', 'error');
+      if (!file.type.startsWith('image/')) {
+        showToast('❌ กรุณาเลือกไฟล์รูปภาพเท่านั้น', 'error');
         document.getElementById('file-input').value = '';
         return;
       }
 
       const reader = new FileReader();
-      
       reader.onerror = () => {
-        showToast('เกิดข้อผิดพลาดในการอ่านไฟล์', 'error');
+        showToast('❌ เกิดข้อผิดพลาดในการอ่านไฟล์', 'error');
         document.getElementById('file-input').value = '';
       };
 
-      reader.onload = (event) => {
-        try {
-          const img = new Image();
-          
-          img.onerror = () => {
-            showToast('ไฟล์รูปภาพไม่ถูกต้อง', 'error');
-            document.getElementById('file-input').value = '';
-          };
-
-          img.onload = () => {
-            try {
-              const canvas = document.createElement('canvas');
-              let w = img.width;
-              let h = img.height;
-              const maxSize = 1200;
-              const maxFileSize = 300 * 1024; // 300KB
-
-              // ลดขนาดภาพ
-              if (w > h) {
-                if (w > maxSize) {
-                  h = Math.round((h * maxSize) / w);
-                  w = maxSize;
-                }
-              } else {
-                if (h > maxSize) {
-                  w = Math.round((w * maxSize) / h);
-                  h = maxSize;
-                }
-              }
-
-              canvas.width = w;
-              canvas.height = h;
-
-              const ctx = canvas.getContext('2d');
-              ctx.fillStyle = '#ffffff';
-              ctx.fillRect(0, 0, w, h);
-              ctx.drawImage(img, 0, 0, w, h);
-
-              // บีบอัดแบบเพิ่มขึ้นตามขนาด
-              let quality = 0.85;
-              let compressedImage = canvas.toDataURL('image/jpeg', quality);
-
-              while (compressedImage.length > maxFileSize && quality > 0.3) {
-                quality -= 0.1;
-                compressedImage = canvas.toDataURL('image/jpeg', quality);
-              }
-
-              if (compressedImage.length > maxFileSize * 1.5) {
-                showToast('ไม่สามารถบีบอัดรูปภาพได้ กรุณาใช้รูปที่เล็กกว่า', 'error');
-                document.getElementById('file-input').value = '';
-                return;
-              }
-
-              uploadedImage = compressedImage;
-
-              // แสดงตัวอย่าง
-              const previewImg = document.getElementById('preview-img');
-              previewImg.src = uploadedImage;
-              previewImg.onerror = () => {
-                showToast('เกิดข้อผิดพลาดในการแสดงตัวอย่าง', 'error');
-              };
-
-              document.getElementById('upload-prompt').classList.add('hidden');
-              document.getElementById('image-preview').classList.remove('hidden');
-
-              const sizeInKB = Math.round(compressedImage.length / 1024);
-              showToast(`อัปโหลดสำเร็จ (${sizeInKB}KB)`);
-            } catch (err) {
-              console.error('Canvas error:', err);
-              showToast('เกิดข้อผิดพลาดในการประมวลผลรูป', 'error');
-              document.getElementById('file-input').value = '';
-            }
-          };
-
-          img.src = event.target.result;
-        } catch (err) {
-          console.error('Image processing error:', err);
-          showToast('เกิดข้อผิดพลาด', 'error');
-          document.getElementById('file-input').value = '';
-        }
-      };
-
+      reader.onload = (event) => compressImage(event.target.result);
       reader.readAsDataURL(file);
     }
 
-    function clearImage() {
-      uploadedImage = '';
-      document.getElementById('file-input').value = '';
-      document.getElementById('image-preview').classList.add('hidden');
-      document.getElementById('upload-prompt').classList.remove('hidden');
+    function compressImage(base64Str) {
+      const img = new Image();
+      img.onerror = () => {
+        showToast('❌ ไฟล์รูปภาพไม่ถูกต้อง', 'error');
+        document.getElementById('file-input').value = '';
+      };
+
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let { width: w, height: h } = img;
+        const maxDim = 1200;
+
+        // ลดขนาด
+        if (w > h) {
+          if (w > maxDim) {
+            h = Math.round((h * maxDim) / w);
+            w = maxDim;
+          }
+        } else {
+          if (h > maxDim) {
+            w = Math.round((w * maxDim) / h);
+            h = maxDim;
+          }
+        }
+
+        canvas.width = w;
+        canvas.height = h;
+
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
+
+        // บีบอัด
+        let quality = 0.8;
+        let compressed = canvas.toDataURL('image/jpeg', quality);
+
+        while (compressed.length > 300 * 1024 && quality > 0.2) {
+          quality -= 0.1;
+          compressed = canvas.toDataURL('image/jpeg', quality);
+        }
+
+        if (compressed.length > 300 * 1024) {
+          showToast('❌ ไม่สามารถบีบอัดรูปได้ กรุณาใช้รูปที่เล็กกว่า', 'error');
+          document.getElementById('file-input').value = '';
+          return;
+        }
+
+        uploadedImage = compressed;
+        const sizeKB = Math.round(compressed.length / 1024);
+        showToast(`✅ อัปโหลดสำเร็จ (${sizeKB}KB)`);
+
+        // Show preview
+        document.getElementById('preview-image').src = uploadedImage;
+        document.getElementById('upload-text').classList.add('hidden');
+        document.getElementById('upload-preview').classList.remove('hidden');
+      };
+
+      img.src = base64Str;
     }
 
+    function clearUploadImage() {
+      uploadedImage = null;
+      document.getElementById('file-input').value = '';
+      document.getElementById('upload-text').classList.remove('hidden');
+      document.getElementById('upload-preview').classList.add('hidden');
+    }
+
+    // ========== FORM SUBMISSION ==========
     async function submitRequest(e) {
       e.preventDefault();
 
       if (!window.dataSdk) {
-        showToast('ระบบขัดข้อง กรุณาโหลดหน้าใหม่', 'error');
+        showToast('❌ ระบบขัดข้อง', 'error');
         return;
       }
 
       if (allRequests.length >= 999) {
-        showToast('ระบบเต็ม กรุณาติดต่อผู้ดูแลระบบ', 'error');
+        showToast('❌ ระบบเต็ม กรุณาติดต่อผู้ดูแล', 'error');
         return;
       }
 
-      const btn = document.getElementById('submit-btn');
-      btn.disabled = true;
-      btn.textContent = 'กำลังส่ง...';
+      // Collect data
+      const name = document.getElementById('field-name').value.trim();
+      const classroom = document.getElementById('field-class').value.trim();
+      const date = document.getElementById('field-date').value;
+      const timeOut = document.getElementById('field-time-out').value;
+      const timeBack = document.getElementById('field-time-back').value || '';
+      const reason = document.getElementById('field-reason').value.trim();
+      const parentName = document.getElementById('field-parent-name').value.trim();
+      const parentPhone = document.getElementById('field-parent-phone').value.trim();
 
-      const name = document.getElementById('form-name').value.trim();
-      const classroom = document.getElementById('form-class').value.trim();
-      const date = document.getElementById('form-date').value;
-      const timeOut = document.getElementById('form-time-out').value;
-      const timeBack = document.getElementById('form-time-back').value || '';
-      const reason = document.getElementById('form-reason').value.trim();
-      const parentName = document.getElementById('form-parent-name').value.trim();
-      const parentPhone = document.getElementById('form-parent-phone').value.trim();
-
+      // Validate all fields
       if (!name || !classroom || !date || !timeOut || !reason || !parentName || !parentPhone) {
-        showToast('กรุณากรอกข้อมูลให้ครบถ้วน', 'error');
-        btn.disabled = false;
-        btn.textContent = 'ส่งคำขอ';
+        showToast('❌ กรุณากรอกข้อมูลให้ครบถ้วน (*)', 'error');
         return;
       }
 
-      const data = {
-        type: 'leave_request',
-        student_id: currentUser.id,
-        citizen_id: currentUser.citizen,
-        student_name: name,
-        class_room: classroom,
-        leave_date: date,
-        leave_time: timeOut,
-        return_time: timeBack,
-        reason: reason,
-        parent_name: parentName,
-        parent_phone: parentPhone,
-        parent_image: uploadedImage,
-        status: 'pending',
-        reject_reason: '',
-        created_at: new Date().toISOString(),
-        approved_by: '',
-        approved_at: ''
-      };
+      const btn = document.getElementById('btn-submit');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="inline-flex items-center gap-2"><span class="spinner"></span> กำลังส่ง...</span>';
 
       try {
-        const result = await window.dataSdk.create(data);
+        const result = await window.dataSdk.create({
+          student_id: currentUser.id,
+          citizen_id: currentUser.citizen,
+          student_name: name,
+          class_room: classroom,
+          leave_date: date,
+          leave_time: timeOut,
+          return_time: timeBack,
+          reason: reason,
+          parent_name: parentName,
+          parent_phone: parentPhone,
+          parent_image: uploadedImage || '',
+          status: 'pending',
+          reject_reason: '',
+          created_at: new Date().toISOString(),
+          approved_by: '',
+          approved_at: ''
+        });
+
         if (result.isOk) {
-          showToast('ส่งคำขอสำเร็จ ✅');
-          document.getElementById('request-form').reset();
-          clearImage();
-          document.getElementById('form-date').value = new Date().toISOString().split('T')[0];
-          btn.textContent = 'ส่งคำขอ';
-          btn.disabled = false;
+          showToast('✅ ส่งคำขอสำเร็จ');
+          document.getElementById('form-request').reset();
+          clearUploadImage();
+          setDefaultDate();
+          setTimeout(() => switchStudentTab('history'), 1000);
         } else {
-          showToast('เกิดข้อผิดพลาด: ' + (result.error?.message || 'ลองใหม่'), 'error');
-          btn.disabled = false;
-          btn.textContent = 'ส่งคำขอ';
+          showToast(`❌ ${result.error?.message || 'เกิดข้อผิดพลาด'}`, 'error');
         }
       } catch (err) {
-        console.error('Submit error:', err);
-        showToast('เกิดข้อผิดพลาด: ' + (err?.message || 'ลองใหม่'), 'error');
+        showToast(`❌ ${err.message}`, 'error');
+      } finally {
         btn.disabled = false;
-        btn.textContent = 'ส่งคำขอ';
+        btn.innerHTML = '✅ ส่งคำขอ';
       }
     }
 
+    // ========== STUDENT VIEW ==========
     function updateStudentView() {
-      const info = document.getElementById('student-info');
-      if (info) {
-        info.textContent = `รหัส: ${currentUser.id}`;
+      const display = document.getElementById('student-name-display');
+      if (display) {
+        display.textContent = `เรียน นักเรียน ${currentUser.id} (${currentUser.citizen})`;
       }
     }
 
     function loadStudentHistory() {
-      const myRequests = allRequests.filter(r => r.student_id === currentUser.id);
+      const myReqs = allRequests.filter(r => r.student_id === currentUser.id);
       const list = document.getElementById('history-list');
 
-      if (myRequests.length === 0) {
-        list.innerHTML = '<div class="text-center text-gray-500 py-8">ยังไม่มีประวัติ</div>';
+      if (myReqs.length === 0) {
+        list.innerHTML = '<div class="text-center text-gray-400 py-12"><p class="text-lg">ยังไม่มีประวัติ</p></div>';
         return;
       }
 
-      list.innerHTML = myRequests.map(r => `
-        <div class="bg-white rounded-lg shadow p-4 border-l-4 ${getStatusBorder(r.status)}">
+      list.innerHTML = myReqs.map(r => `
+        <div class="bg-gradient-to-r ${getStatusGradient(r.status)} rounded-lg shadow-md p-6 border-l-4 ${getStatusBorder(r.status)}">
           <div class="flex justify-between items-start">
-            <div>
-              <p class="font-semibold text-gray-800">${formatDate(r.leave_date)}</p>
-              <p class="text-gray-600 text-sm">${r.leave_time} น.</p>
-              <p class="text-gray-600 text-sm mt-2">เหตุผล: ${r.reason}</p>
+            <div class="flex-1">
+              <p class="font-bold text-lg text-gray-800">📅 ${formatDate(r.leave_date)}</p>
+              <p class="text-gray-700 mt-2">⏰ ${r.leave_time} ${r.return_time ? `- ${r.return_time}` : '(ทั้งวัน)'}</p>
+              <p class="text-gray-700 mt-2">📝 ${r.reason}</p>
             </div>
-            <span class="px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(r.status)}">
-              ${getStatusText(r.status)}
-            </span>
+            <div class="text-center">
+              <span class="inline-block px-4 py-2 rounded-full font-bold text-white ${getStatusColor(r.status)}">
+                ${getStatusEmoji(r.status)} ${getStatusThai(r.status)}
+              </span>
+            </div>
           </div>
-          ${r.reject_reason ? `<p class="text-red-600 text-sm mt-2">ไม่อนุมัติ: ${r.reject_reason}</p>` : ''}
+          ${r.reject_reason ? `<div class="mt-4 bg-red-100 border-l-4 border-red-500 p-3 rounded"><p class="text-red-700 font-semibold">เหตุผลไม่อนุมัติ: ${r.reject_reason}</p></div>` : ''}
         </div>
       `).join('');
     }
 
-    // Teacher
+    // ========== TEACHER VIEW ==========
     function updateTeacherView() {
-      updateStats();
-      renderRequests(allRequests);
+      updateTeacherStats();
+      renderTeacherRequests(allRequests);
     }
 
-    function updateStats() {
+    function updateTeacherStats() {
       document.getElementById('stat-total').textContent = allRequests.length;
       document.getElementById('stat-pending').textContent = allRequests.filter(r => r.status === 'pending').length;
       document.getElementById('stat-approved').textContent = allRequests.filter(r => r.status === 'approved').length;
@@ -659,9 +590,9 @@
 
     function filterRequests() {
       let filtered = allRequests;
-      const search = document.getElementById('search-box').value.toLowerCase();
-      const status = document.getElementById('status-filter').value;
-      const date = document.getElementById('date-filter').value;
+      const search = document.getElementById('search-input').value.toLowerCase();
+      const status = document.getElementById('status-select').value;
+      const date = document.getElementById('date-select').value;
 
       if (search) {
         filtered = filtered.filter(r =>
@@ -679,40 +610,47 @@
         filtered = filtered.filter(r => r.leave_date === date);
       }
 
-      renderRequests(filtered);
+      renderTeacherRequests(filtered);
     }
 
-    function renderRequests(requests) {
+    function renderTeacherRequests(reqs) {
       const list = document.getElementById('requests-list');
 
-      if (requests.length === 0) {
-        list.innerHTML = '<div class="text-center text-gray-500 py-8">ไม่มีคำขอ</div>';
+      if (reqs.length === 0) {
+        list.innerHTML = '<div class="text-center text-gray-400 py-12"><p class="text-lg">ไม่มีคำขอ</p></div>';
         return;
       }
 
-      list.innerHTML = requests.map(r => `
-        <div class="bg-white rounded-lg shadow p-4 border-l-4 ${getStatusBorder(r.status)} card-hover">
-          <div class="flex justify-between items-start">
-            <div class="flex-1">
-              <h4 class="font-bold text-lg text-gray-800">${r.student_name}</h4>
-              <p class="text-gray-600 text-sm">รหัส: ${r.student_id} | ชั้น: ${r.class_room}</p>
-              <p class="text-gray-600 text-sm mt-2">📅 ${formatDate(r.leave_date)} ⏰ ${r.leave_time} น.</p>
-              <p class="text-gray-600 text-sm">เหตุผล: ${r.reason}</p>
-              <p class="text-gray-600 text-sm">ผู้ปกครอง: ${r.parent_name} (${r.parent_phone})</p>
+      list.innerHTML = reqs.map(r => `
+        <div class="bg-white rounded-lg shadow-md hover:shadow-lg p-6 border-l-4 ${getStatusBorder(r.status)} transition">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+            <div>
+              <h4 class="text-xl font-bold text-gray-800">${r.student_name}</h4>
+              <p class="text-gray-600">🔹 รหัส: ${r.student_id}</p>
+              <p class="text-gray-600">🔹 ชั้น: ${r.class_room}</p>
+              <p class="text-gray-600 mt-3">📅 ${formatDate(r.leave_date)}</p>
+              <p class="text-gray-600">⏰ ${r.leave_time} ${r.return_time ? `- ${r.return_time}` : ''}</p>
+              <p class="text-gray-700 mt-2 font-semibold">เหตุผล: ${r.reason}</p>
+              <p class="text-gray-600 mt-2">👨 ผู้ปกครอง: ${r.parent_name}</p>
+              <p class="text-gray-600">📞 ${r.parent_phone}</p>
             </div>
-            <div class="flex flex-col gap-2">
-              <span class="px-3 py-1 rounded-full text-sm font-medium text-center ${getStatusColor(r.status)}">
-                ${getStatusText(r.status)}
+
+            <div class="text-center">
+              <span class="inline-block px-4 py-3 rounded-full font-bold text-white text-lg ${getStatusColor(r.status)}">
+                ${getStatusEmoji(r.status)} ${getStatusThai(r.status)}
               </span>
-              <button onclick="showDetail('${r.__backendId}')" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm transition-colors">
-                ดูรายละเอียด
+            </div>
+
+            <div class="space-y-2">
+              <button onclick="showDetailModal('${r.__backendId}')" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition">
+                📄 ดูรายละเอียด
               </button>
               ${r.status === 'pending' ? `
-                <button onclick="approveRequest('${r.__backendId}')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm transition-colors">
-                  อนุมัติ
+                <button onclick="approveTeacherRequest('${r.__backendId}')" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition">
+                  ✅ อนุมัติ
                 </button>
-                <button onclick="openRejectModal('${r.__backendId}')" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm transition-colors">
-                  ไม่อนุมัติ
+                <button onclick="openRejectModal('${r.__backendId}')" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition">
+                  ❌ ไม่อนุมัติ
                 </button>
               ` : ''}
             </div>
@@ -721,190 +659,221 @@
       `).join('');
     }
 
-    function showDetail(id) {
+    // ========== MODALS ==========
+    function showDetailModal(id) {
       const req = allRequests.find(r => r.__backendId === id);
       if (!req) return;
 
-      const content = document.getElementById('detail-content');
+      const content = document.getElementById('modal-detail-content');
       content.innerHTML = `
-        <div class="space-y-4">
+        <div class="space-y-6">
           <div class="grid grid-cols-2 gap-4">
-            <div>
-              <p class="text-gray-600 text-sm">ชื่อ</p>
-              <p class="font-semibold text-gray-800">${req.student_name}</p>
+            <div class="bg-blue-50 p-4 rounded-lg">
+              <p class="text-xs text-gray-600 font-semibold">ชื่อ</p>
+              <p class="text-lg font-bold text-gray-800">${req.student_name}</p>
             </div>
-            <div>
-              <p class="text-gray-600 text-sm">รหัส</p>
-              <p class="font-semibold text-gray-800">${req.student_id}</p>
+            <div class="bg-blue-50 p-4 rounded-lg">
+              <p class="text-xs text-gray-600 font-semibold">รหัส</p>
+              <p class="text-lg font-bold text-gray-800">${req.student_id}</p>
             </div>
-            <div>
-              <p class="text-gray-600 text-sm">ชั้น</p>
-              <p class="font-semibold text-gray-800">${req.class_room}</p>
+            <div class="bg-blue-50 p-4 rounded-lg">
+              <p class="text-xs text-gray-600 font-semibold">ชั้น</p>
+              <p class="text-lg font-bold text-gray-800">${req.class_room}</p>
             </div>
-            <div>
-              <p class="text-gray-600 text-sm">วันที่ลา</p>
-              <p class="font-semibold text-gray-800">${formatDate(req.leave_date)}</p>
+            <div class="bg-blue-50 p-4 rounded-lg">
+              <p class="text-xs text-gray-600 font-semibold">เลขประชาชน</p>
+              <p class="text-lg font-bold text-gray-800">${req.citizen_id}</p>
             </div>
-            <div>
-              <p class="text-gray-600 text-sm">เวลาออก</p>
-              <p class="font-semibold text-gray-800">${req.leave_time} น.</p>
+          </div>
+
+          <div class="border-t-2 border-gray-200 pt-6">
+            <h4 class="text-lg font-bold text-gray-800 mb-4">📅 รายละเอียดการลา</h4>
+            <div class="grid grid-cols-3 gap-3">
+              <div class="bg-green-50 p-4 rounded-lg">
+                <p class="text-xs text-gray-600 font-semibold">วันที่</p>
+                <p class="text-lg font-bold text-green-700">${formatDate(req.leave_date)}</p>
+              </div>
+              <div class="bg-green-50 p-4 rounded-lg">
+                <p class="text-xs text-gray-600 font-semibold">เวลาออก</p>
+                <p class="text-lg font-bold text-green-700">${req.leave_time}</p>
+              </div>
+              <div class="bg-green-50 p-4 rounded-lg">
+                <p class="text-xs text-gray-600 font-semibold">เวลากลับ</p>
+                <p class="text-lg font-bold text-green-700">${req.return_time || '-'}</p>
+              </div>
             </div>
-            ${req.return_time ? `
-              <div>
-                <p class="text-gray-600 text-sm">เวลากลับ</p>
-                <p class="font-semibold text-gray-800">${req.return_time} น.</p>
+            <div class="mt-4 bg-green-50 p-4 rounded-lg">
+              <p class="text-xs text-gray-600 font-semibold mb-2">เหตุผล</p>
+              <p class="text-gray-800">${req.reason}</p>
+            </div>
+          </div>
+
+          <div class="border-t-2 border-gray-200 pt-6">
+            <h4 class="text-lg font-bold text-gray-800 mb-4">👨‍👩‍👧 ข้อมูลผู้ปกครอง</h4>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="bg-orange-50 p-4 rounded-lg">
+                <p class="text-xs text-gray-600 font-semibold">ชื่อ</p>
+                <p class="text-lg font-bold text-gray-800">${req.parent_name}</p>
+              </div>
+              <div class="bg-orange-50 p-4 rounded-lg">
+                <p class="text-xs text-gray-600 font-semibold">เบอร์ติดต่อ</p>
+                <p class="text-lg font-bold text-gray-800">${req.parent_phone}</p>
+              </div>
+            </div>
+            ${req.parent_image ? `
+              <div class="mt-4">
+                <p class="text-sm font-semibold text-gray-600 mb-3">📸 รูปผู้ปกครอง</p>
+                <img src="${req.parent_image}" alt="Parent" class="w-full max-h-96 object-contain rounded-lg shadow">
               </div>
             ` : ''}
           </div>
-          <div>
-            <p class="text-gray-600 text-sm">เหตุผล</p>
-            <p class="font-semibold text-gray-800">${req.reason}</p>
-          </div>
-          <div class="border-t pt-4">
-            <p class="font-semibold text-gray-800 mb-2">ผู้ปกครอง</p>
-            <p class="text-gray-600">ชื่อ: ${req.parent_name}</p>
-            <p class="text-gray-600">เบอร์: ${req.parent_phone}</p>
-            ${req.parent_image ? `
-              <img src="${req.parent_image}" alt="ผู้ปกครอง" class="mt-4 max-h-64 rounded-lg">
-            ` : ''}
-          </div>
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <p class="text-gray-600 text-sm">สถานะ</p>
-            <p class="font-semibold text-lg ${getStatusText(req.status).includes('อนุมัติ') ? 'text-green-600' : getStatusText(req.status).includes('��ม่') ? 'text-red-600' : 'text-yellow-600'}">
-              ${getStatusText(req.status)}
+
+          <div class="bg-${getStatusColorBg(req.status)} p-6 rounded-lg border-2 border-${getStatusBorderColor(req.status)}">
+            <p class="text-sm font-semibold text-gray-600 mb-2">สถานะ</p>
+            <p class="text-2xl font-bold ${getStatusColorText(req.status)}">
+              ${getStatusEmoji(req.status)} ${getStatusThai(req.status)}
             </p>
-            ${req.approved_by ? `<p class="text-gray-600 text-sm mt-2">โดย: ${req.approved_by}</p>` : ''}
+            ${req.approved_by ? `<p class="text-sm text-gray-600 mt-3">อนุมัติโดย: ${req.approved_by} เมื่อ ${formatDateTime(req.approved_at)}</p>` : ''}
+            ${req.reject_reason ? `<div class="mt-4 bg-red-100 p-3 rounded border-l-4 border-red-500"><p class="font-semibold text-red-700">เหตุผลไม่อนุมัติ:</p><p class="text-red-700">${req.reject_reason}</p></div>` : ''}
           </div>
-          ${req.reject_reason ? `
-            <div class="bg-red-50 p-4 rounded-lg border border-red-200">
-              <p class="text-red-600 font-semibold">เหตุผลไม่อนุมัติ:</p>
-              <p class="text-red-700">${req.reject_reason}</p>
-            </div>
-          ` : ''}
         </div>
       `;
-      document.getElementById('detail-modal').classList.remove('hidden');
+      document.getElementById('modal-detail').classList.remove('hidden');
     }
 
     function closeDetailModal() {
-      document.getElementById('detail-modal').classList.add('hidden');
-    }
-
-    async function approveRequest(id) {
-      const req = allRequests.find(r => r.__backendId === id);
-      if (!req) return;
-
-      const updated = {
-        ...req,
-        status: 'approved',
-        approved_by: '���รู',
-        approved_at: new Date().toISOString()
-      };
-
-      try {
-        const result = await window.dataSdk.update(updated);
-        if (result.isOk) {
-          showToast('อนุมัติสำเร็จ');
-          closeDetailModal();
-        } else {
-          showToast('เกิดข้อผิดพลาด', 'error');
-        }
-      } catch (err) {
-        console.error(err);
-        showToast('เกิดข้อผิดพลาด', 'error');
-      }
+      document.getElementById('modal-detail').classList.add('hidden');
     }
 
     function openRejectModal(id) {
       currentRejectId = id;
-      document.getElementById('reject-input').value = '';
-      document.getElementById('reject-modal').classList.remove('hidden');
+      document.getElementById('reject-reason-input').value = '';
+      document.getElementById('modal-reject').classList.remove('hidden');
     }
 
     function closeRejectModal() {
       currentRejectId = null;
-      document.getElementById('reject-modal').classList.add('hidden');
+      document.getElementById('modal-reject').classList.add('hidden');
+    }
+
+    // ========== TEACHER ACTIONS ==========
+    async function approveTeacherRequest(id) {
+      const req = allRequests.find(r => r.__backendId === id);
+      if (!req) return;
+
+      try {
+        const result = await window.dataSdk.update({
+          ...req,
+          status: 'approved',
+          approved_by: 'ครู',
+          approved_at: new Date().toISOString()
+        });
+
+        if (result.isOk) {
+          showToast('✅ อนุมัติสำเร็จ');
+          closeDetailModal();
+        } else {
+          showToast(`❌ ${result.error?.message}`, 'error');
+        }
+      } catch (err) {
+        showToast(`❌ ${err.message}`, 'error');
+      }
     }
 
     async function submitReject() {
-      const reason = document.getElementById('reject-input').value.trim();
+      const reason = document.getElementById('reject-reason-input').value.trim();
       if (!reason) {
-        showToast('กรุณาระบุเหตุ��ล', 'error');
+        showToast('❌ กรุณาระบุเหตุผล', 'error');
         return;
       }
 
       const req = allRequests.find(r => r.__backendId === currentRejectId);
       if (!req) return;
 
-      const updated = {
-        ...req,
-        status: 'rejected',
-        reject_reason: reason,
-        approved_by: 'ครู',
-        approved_at: new Date().toISOString()
-      };
-
       try {
-        const result = await window.dataSdk.update(updated);
+        const result = await window.dataSdk.update({
+          ...req,
+          status: 'rejected',
+          reject_reason: reason,
+          approved_by: 'ครู',
+          approved_at: new Date().toISOString()
+        });
+
         if (result.isOk) {
-          showToast('บันทึกสำเร็จ');
+          showToast('✅ บันทึกสำเร็จ');
           closeRejectModal();
           closeDetailModal();
         } else {
-          showToast('เกิดข้อผิดพลาด', 'error');
+          showToast(`❌ ${result.error?.message}`, 'error');
         }
       } catch (err) {
-        console.error(err);
-        showToast('เกิดข้อผิดพลาด', 'error');
+        showToast(`❌ ${err.message}`, 'error');
       }
     }
 
-    // Utilities
-    function updateViews() {
-      if (currentRole === 'teacher') {
-        updateTeacherView();
-      } else if (currentRole === 'student') {
-        if (!document.getElementById('history-section').classList.contains('hidden')) {
-          loadStudentHistory();
-        }
-      }
+    // ========== UTILITIES ==========
+    function clearAllInputs() {
+      document.querySelectorAll('input, textarea').forEach(el => el.value = '');
+      document.getElementById('file-input').value = '';
+      clearUploadImage();
+    }
+
+    function updateAllViews() {
+      if (currentRole === 'teacher') updateTeacherView();
+      else if (currentRole === 'student' && !document.getElementById('student-tab-history').classList.contains('hidden')) loadStudentHistory();
+    }
+
+    function updateAppTitle() {
+      const title = document.getElementById('app-title');
+      if (title) title.textContent = config.school_name || defaultConfig.school_name;
     }
 
     function formatDate(str) {
       if (!str) return '-';
       const date = new Date(str + 'T00:00:00');
-      return date.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
+      return new Intl.DateTimeFormat('th-TH', { year: 'numeric', month: 'short', day: 'numeric' }).format(date);
+    }
+
+    function formatDateTime(str) {
+      if (!str) return '-';
+      const date = new Date(str);
+      return new Intl.DateTimeFormat('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(date);
     }
 
     function getStatusColor(status) {
-      const colors = {
-        pending: 'bg-yellow-100 text-yellow-800',
-        approved: 'bg-green-100 text-green-800',
-        rejected: 'bg-red-100 text-red-800'
-      };
-      return colors[status] || 'bg-gray-100 text-gray-800';
+      return status === 'pending' ? 'bg-yellow-500' : status === 'approved' ? 'bg-green-500' : 'bg-red-500';
+    }
+
+    function getStatusGradient(status) {
+      return status === 'pending' ? 'from-yellow-50 to-yellow-100' : status === 'approved' ? 'from-green-50 to-green-100' : 'from-red-50 to-red-100';
     }
 
     function getStatusBorder(status) {
-      const borders = {
-        pending: 'border-yellow-500',
-        approved: 'border-green-500',
-        rejected: 'border-red-500'
-      };
-      return borders[status] || 'border-gray-500';
+      return status === 'pending' ? 'border-yellow-500' : status === 'approved' ? 'border-green-500' : 'border-red-500';
     }
 
-    function getStatusText(status) {
-      const texts = {
-        pending: 'รอตรวจสอบ',
-        approved: 'อนุมัติแล้ว',
-        rejected: 'ไม่อนุมัติ'
-      };
-      return texts[status] || status;
+    function getStatusBorderColor(status) {
+      return status === 'pending' ? 'yellow-300' : status === 'approved' ? 'green-300' : 'red-300';
+    }
+
+    function getStatusColorBg(status) {
+      return status === 'pending' ? 'yellow-50' : status === 'approved' ? 'green-50' : 'red-50';
+    }
+
+    function getStatusColorText(status) {
+      return status === 'pending' ? 'text-yellow-700' : status === 'approved' ? 'text-green-700' : 'text-red-700';
+    }
+
+    function getStatusEmoji(status) {
+      return status === 'pending' ? '⏳' : status === 'approved' ? '✅' : '❌';
+    }
+
+    function getStatusThai(status) {
+      return status === 'pending' ? 'รอตรวจสอบ' : status === 'approved' ? 'อนุมัติแล้ว' : 'ไม่อนุมัติ';
     }
 
     // Start
     init();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cb8203b67dd7549',t:'MTc3MDY5MDAxMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cb8282d3485a192',t:'MTc3MDY5MDMzNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
