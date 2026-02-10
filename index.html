@@ -95,7 +95,7 @@
        <form id="form-request" onsubmit="submitRequest(event)" class="space-y-8"><!-- Section: Student Info -->
         <fieldset class="border-2 border-blue-200 rounded-lg p-6 bg-blue-50"><legend class="text-lg font-bold text-blue-700 px-2">👤 ข้อมูลนักเรียน</legend>
          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-          <div><label class="block text-sm font-semibold text-gray-700 mb-2">ชื่อ-นามสกุล *</label> <input type="text" id="field-name" placeholder="เช่น สมชาย ใจดี" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none" required> <span class="field-error text-red-500 text-xs mt-1 hidden"></span>
+          <div><label class="block text-sm font-semibold text-gray-700 mb-2">ชื่อ-นามสกุ��� *</label> <input type="text" id="field-name" placeholder="เช่น สมชาย ใจดี" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none" required> <span class="field-error text-red-500 text-xs mt-1 hidden"></span>
           </div>
           <div><label class="block text-sm font-semibold text-gray-700 mb-2">ชั้น/ห้อง *</label> <input type="text" id="field-class" placeholder="เช่น ม.3/1" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none" required> <span class="field-error text-red-500 text-xs mt-1 hidden"></span>
           </div>
@@ -192,7 +192,7 @@
   <div id="modal-detail" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
    <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto">
     <div class="sticky top-0 bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 flex justify-between items-center">
-     <h3 class="text-2xl font-bold">📄 รายละเอียดคำขอ</h3><button onclick="closeDetailModal()" class="text-2xl hover:opacity-80">✕</button>
+     <h3 class="text-2xl font-bold">📄 รายละเอียด��ำขอ</h3><button onclick="closeDetailModal()" class="text-2xl hover:opacity-80">✕</button>
     </div>
     <div id="modal-detail-content" class="p-6"></div>
    </div>
@@ -247,7 +247,7 @@
 
     async function initDataSDK() {
       if (!window.dataSdk) {
-        console.warn('Data SDK not available');
+        console.warn('Data SDK not available - using demo mode');
         dataSdkReady = false;
         return;
       }
@@ -262,14 +262,14 @@
         
         if (result.isOk) {
           dataSdkReady = true;
-          console.log('Data SDK initialized successfully');
+          console.log('✅ Data SDK ready');
         } else {
+          console.error('Data SDK init error:', result.error);
           dataSdkReady = false;
-          console.error('Data SDK init failed:', result.error);
         }
       } catch (err) {
+        console.error('Data SDK exception:', err);
         dataSdkReady = false;
-        console.error('Data SDK error:', err);
       }
     }
 
@@ -456,7 +456,7 @@
         }
 
         if (compressed.length > 300 * 1024) {
-          showToast('❌ ไม่สามารถบีบอัดรูปได้ กรุณาใช้รูปที่เล็กกว่า', 'error');
+          showToast('❌ ไม่สามารถบีบอัดรูปได้ กรุณาใช้รูปที่เล็��กว่า', 'error');
           document.getElementById('file-input').value = '';
           return;
         }
@@ -485,7 +485,7 @@
       e.preventDefault();
 
       if (!dataSdkReady) {
-        showToast('⚠️ ระบบยังไม่พร้อม กรุณารอสักครู่...', 'info');
+        showToast('⚠️ ระบบย��งไม่พร้อม กรุณารอสักครู่...', 'info');
         return;
       }
 
@@ -817,7 +817,7 @@
           closeRejectModal();
           closeDetailModal();
         } else {
-          showToast(`❌ ${result.error?.message}`, 'error');
+          showToast(`�� ${result.error?.message}`, 'error');
         }
       } catch (err) {
         showToast(`❌ ${err.message}`, 'error');
@@ -888,5 +888,5 @@
     // Start
     init();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cb830dda48998e2',t:'MTc3MDY5MDY5My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cb839f427c8a186',t:'MTc3MDY5MTA2NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
