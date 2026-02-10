@@ -116,7 +116,7 @@
       <form id="student-login" onsubmit="handleStudentLogin(event)" class="space-y-4">
        <div><label class="block text-sm font-medium text-gray-700 mb-2">รหัสนักเรียน</label> <input type="text" id="student-id" placeholder="เช่น 001" class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none" required>
        </div>
-       <div><label class="block text-sm font-medium text-gray-700 mb-2">เลขประจำตัวประชาชน</label> <input type="text" id="student-citizen" placeholder="13 หลัก" maxlength="13" class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none" required>
+       <div><label class="block text-sm font-medium text-gray-700 mb-2">���ลขประจำตัวประชาชน</label> <input type="text" id="student-citizen" placeholder="13 หลัก" maxlength="13" class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none" required>
        </div><button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition-colors"> เข้าสู่ระบบ </button>
       </form><!-- Teacher Login -->
       <form id="teacher-login" onsubmit="handleTeacherLogin(event)" class="space-y-4 hidden">
@@ -137,7 +137,7 @@
        <p id="student-info" class="text-gray-600">เรียน...</p>
       </div><button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"> ออกจากระบบ </button>
      </div><!-- Tabs -->
-     <div class="flex gap-2 mb-6"><button onclick="switchStudentSection('form')" id="form-tab" class="px-4 py-2 bg-white border-2 border-blue-500 text-blue-600 rounded-lg font-medium shadow"> ส��งคำขอ </button> <button onclick="switchStudentSection('history')" id="history-tab" class="px-4 py-2 bg-white border-2 border-gray-300 text-gray-600 rounded-lg font-medium shadow hover:border-blue-500 transition-colors"> ประวัติของฉัน </button>
+     <div class="flex gap-2 mb-6"><button onclick="switchStudentSection('form')" id="form-tab" class="px-4 py-2 bg-white border-2 border-blue-500 text-blue-600 rounded-lg font-medium shadow"> ส��งคำขอ </button> <button onclick="switchStudentSection('history')" id="history-tab" class="px-4 py-2 bg-white border-2 border-gray-300 text-gray-600 rounded-lg font-medium shadow hover:border-blue-500 transition-colors"> ประวัติ��องฉัน </button>
      </div><!-- Request Form -->
      <div id="form-section" class="bg-white rounded-lg shadow-md p-6 animate-fade-in">
       <h3 class="text-xl font-bold text-gray-800 mb-6">แบบฟอร์มขอลากลับบ้าน</h3>
@@ -212,7 +212,7 @@
        <p id="stat-pending" class="text-3xl font-bold text-yellow-600">0</p>
       </div>
       <div class="bg-green-50 rounded-lg shadow p-4 text-center border border-green-200">
-       <p class="text-gray-600 text-sm">อนุมัติแล้ว</p>
+       <p class="text-gray-600 text-sm">อน��มัติแล้ว</p>
        <p id="stat-approved" class="text-3xl font-bold text-green-600">0</p>
       </div>
       <div class="bg-red-50 rounded-lg shadow p-4 text-center border border-red-200">
@@ -235,7 +235,7 @@
     <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
      <div class="p-6">
       <div class="flex justify-between items-center mb-4">
-       <h3 class="text-2xl font-bold text-gray-800">รายละเอียดคำขอ</h3><button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600 text-2xl">×</button>
+       <h3 class="text-2xl font-bold text-gray-800">รายละเอียดคำข���</h3><button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600 text-2xl">×</button>
       </div>
       <div id="detail-content"></div>
      </div>
@@ -539,6 +539,11 @@
     async function submitRequest(e) {
       e.preventDefault();
 
+      if (!window.dataSdk) {
+        showToast('ระบบขัดข้อง กรุณาโหลดหน้าใหม่', 'error');
+        return;
+      }
+
       if (allRequests.length >= 999) {
         showToast('ระบบเต็ม กรุณาติดต่อผู้ดูแลระบบ', 'error');
         return;
@@ -548,18 +553,34 @@
       btn.disabled = true;
       btn.textContent = 'กำลังส่ง...';
 
+      const name = document.getElementById('form-name').value.trim();
+      const classroom = document.getElementById('form-class').value.trim();
+      const date = document.getElementById('form-date').value;
+      const timeOut = document.getElementById('form-time-out').value;
+      const timeBack = document.getElementById('form-time-back').value || '';
+      const reason = document.getElementById('form-reason').value.trim();
+      const parentName = document.getElementById('form-parent-name').value.trim();
+      const parentPhone = document.getElementById('form-parent-phone').value.trim();
+
+      if (!name || !classroom || !date || !timeOut || !reason || !parentName || !parentPhone) {
+        showToast('กรุณากรอกข้อมูลให้ครบถ้วน', 'error');
+        btn.disabled = false;
+        btn.textContent = 'ส่งคำขอ';
+        return;
+      }
+
       const data = {
         type: 'leave_request',
         student_id: currentUser.id,
         citizen_id: currentUser.citizen,
-        student_name: document.getElementById('form-name').value,
-        class_room: document.getElementById('form-class').value,
-        leave_date: document.getElementById('form-date').value,
-        leave_time: document.getElementById('form-time-out').value,
-        return_time: document.getElementById('form-time-back').value || '',
-        reason: document.getElementById('form-reason').value,
-        parent_name: document.getElementById('form-parent-name').value,
-        parent_phone: document.getElementById('form-parent-phone').value,
+        student_name: name,
+        class_room: classroom,
+        leave_date: date,
+        leave_time: timeOut,
+        return_time: timeBack,
+        reason: reason,
+        parent_name: parentName,
+        parent_phone: parentPhone,
         parent_image: uploadedImage,
         status: 'pending',
         reject_reason: '',
@@ -571,20 +592,23 @@
       try {
         const result = await window.dataSdk.create(data);
         if (result.isOk) {
-          showToast('ส่งคำขอสำเร็จ');
+          showToast('ส่งคำขอสำเร็จ ✅');
           document.getElementById('request-form').reset();
           clearImage();
           document.getElementById('form-date').value = new Date().toISOString().split('T')[0];
+          btn.textContent = 'ส่งคำขอ';
+          btn.disabled = false;
         } else {
-          showToast('เกิดข้อผิดพลาด กรุณาลองใหม่', 'error');
+          showToast('เกิดข้อผิดพลาด: ' + (result.error?.message || 'ลองใหม่'), 'error');
+          btn.disabled = false;
+          btn.textContent = 'ส่งคำขอ';
         }
       } catch (err) {
-        console.error(err);
-        showToast('เกิดข้อผิดพลาด', 'error');
+        console.error('Submit error:', err);
+        showToast('เกิดข้อผิดพลาด: ' + (err?.message || 'ลองใหม่'), 'error');
+        btn.disabled = false;
+        btn.textContent = 'ส่งคำขอ';
       }
-
-      btn.disabled = false;
-      btn.textContent = 'ส่งคำขอ';
     }
 
     function updateStudentView() {
@@ -746,7 +770,7 @@
           </div>
           <div class="bg-gray-50 p-4 rounded-lg">
             <p class="text-gray-600 text-sm">สถานะ</p>
-            <p class="font-semibold text-lg ${getStatusText(req.status).includes('อนุมัติ') ? 'text-green-600' : getStatusText(req.status).includes('ไม่') ? 'text-red-600' : 'text-yellow-600'}">
+            <p class="font-semibold text-lg ${getStatusText(req.status).includes('อนุมัติ') ? 'text-green-600' : getStatusText(req.status).includes('��ม่') ? 'text-red-600' : 'text-yellow-600'}">
               ${getStatusText(req.status)}
             </p>
             ${req.approved_by ? `<p class="text-gray-600 text-sm mt-2">โดย: ${req.approved_by}</p>` : ''}
@@ -773,7 +797,7 @@
       const updated = {
         ...req,
         status: 'approved',
-        approved_by: 'ครู',
+        approved_by: '���รู',
         approved_at: new Date().toISOString()
       };
 
@@ -882,5 +906,5 @@
     // Start
     init();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cb819c4b0ad5fff',t:'MTc3MDY4OTc0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cb8203b67dd7549',t:'MTc3MDY5MDAxMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
